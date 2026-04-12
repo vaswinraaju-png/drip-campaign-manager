@@ -518,6 +518,22 @@
 const API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NmU5MTQ2ZjJjOGUzMGJlY2FlMDVkYiIsIm5hbWUiOiJUZXJyYXRlcm4iLCJhcHBOYW1lIjoiQWlTZW5zeSIsImNsaWVudElkIjoiNjc2ZTkxNDZmMmM4ZTMwYmVjYWUwNWNlIiwiYWN0aXZlUGxhbiI6IlBST19NT05USExZIiwiaWF0IjoxNzY5Njc2MzQ2fQ.Oj6veBiRUaPtWZ1yaVgTAp-q_JvCfXC8zuU42_T4rM4";
 const API_URL = "https://backend.aisensy.com/campaign/t1/api/v2";
 
+const STORE_KEY = 'wd_state';
+
+function saveState() {
+  try {
+    localStorage.setItem(STORE_KEY, JSON.stringify({ steps, contacts, logs, campName: document.getElementById('camp-name')?.value||'', trigger: document.getElementById('trigger')?.selectedIndex||0 }));
+  } catch(e) {}
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch(e) { return null; }
+}
+
 let steps = [];
 let contacts = [];
 let logs = [];
@@ -537,6 +553,7 @@ function addStep(data) {
   const s = data || { id: Date.now(), delay: 0, delayUnit: 'hours', template: 'jobupdate', vars: '{name}', condition: 'always', buttonParam: '' };
   if (!data) steps.push(s);
   renderSteps();
+  saveState();
 }
 
 function renderSteps() {
@@ -597,8 +614,8 @@ function renderSteps() {
   });
 }
 
-function removeStep(i) { steps.splice(i, 1); renderSteps(); }
-function clearSteps() { steps = []; renderSteps(); }
+function removeStep(i) { steps.splice(i, 1); renderSteps(); saveState(); }
+function clearSteps() { steps = []; renderSteps(); saveState(); }
 
 function saveCampaign() {
   const name = document.getElementById('camp-name').value.trim();
@@ -631,6 +648,7 @@ function parseContacts() {
   renderContactPreview();
   updateMetrics();
   addLog(`Parsed ${contacts.length} contact(s)`, 'info');
+  saveState();
 }
 
 function clearContacts() {
@@ -638,6 +656,7 @@ function clearContacts() {
   document.getElementById('contacts-raw').value = '';
   document.getElementById('contacts-preview').style.display = 'none';
   updateMetrics();
+  saveState();
 }
 
 function renderContactPreview() {
@@ -774,11 +793,13 @@ async function launchCampaign() {
         break;
       }
       renderMonitor();
+      saveState();
       await delay(600);
     }
 
     if (c.status !== 'failed') c.status = 'sent';
     renderMonitor();
+    saveState();
   }
 
   campaignRunning = false;
@@ -789,6 +810,7 @@ function stopCampaign() {
   campaignRunning = false;
   contacts.forEach(c => { if (c.status === 'pending') c.status = 'queued'; });
   renderMonitor();
+  saveState();
   addLog('■ Campaign stopped by user.', 'err');
 }
 
@@ -803,17 +825,66 @@ function addLog(msg, type = 'info') {
       <span class="log-time">${l.time}</span>
       <span class="log-${l.type}">${l.msg}</span>
     </div>`).join('');
+  saveState();
 }
 
 function clearLog() {
   logs = [];
   document.getElementById('log-container').innerHTML = '<div class="empty">No activity yet.</div>';
+  saveState();
 }
 
 function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 /* ── INIT ── */
-addStep({ id: 1, delay: 0, delayUnit: 'hours', template: 'jobupdate', vars: '{name}', condition: 'always', buttonParam: '' });
+(function restoreOrDefault() {
+  const saved = loadState();
+  if (saved) {
+    steps = saved.steps || [];
+    contacts = (saved.contacts || []).map(c => ({
+      ...c,
+      status: (c.status === 'pending') ? 'queued' : c.status
+    }));
+    logs = saved.logs || [];
+
+    // restore steps UI
+    if (steps.length > 0) {
+      renderSteps();
+    } else {
+      addStep({ id: 1, delay: 0, delayUnit: 'hours', template: 'jobupdate', vars: '{name}', condition: 'always', buttonParam: '' });
+    }
+
+    // restore contacts
+    if (contacts.length > 0) renderContactPreview();
+    updateMetrics();
+
+    // restore logs
+    if (logs.length > 0) {
+      const lc = document.getElementById('log-container');
+      lc.innerHTML = logs.map(l => `
+        <div class="log-row">
+          <span class="log-time">${l.time}</span>
+          <span class="log-${l.type}">${l.msg}</span>
+        </div>`).join('');
+    }
+
+    // restore campaign name and trigger
+    if (saved.campName) document.getElementById('camp-name').value = saved.campName;
+    if (saved.trigger != null) document.getElementById('trigger').selectedIndex = saved.trigger;
+
+    // restore contacts textarea
+    if (contacts.length > 0) {
+      document.getElementById('contacts-raw').value = contacts.map(c => `${c.phone},${c.name}`).join('\n');
+    }
+
+  } else {
+    addStep({ id: 1, delay: 0, delayUnit: 'hours', template: 'jobupdate', vars: '{name}', condition: 'always', buttonParam: '' });
+  }
+})();
+
+// Save camp name on input
+document.getElementById('camp-name').addEventListener('input', saveState);
+document.getElementById('trigger').addEventListener('change', saveState);
 </script>
 </body>
 </html>
