@@ -534,7 +534,7 @@ function switchTab(t) {
 
 /* ── STEPS ── */
 function addStep(data) {
-  const s = data || { id: Date.now(), delay: 0, delayUnit: 'hours', template: 'jobupdate', vars: '{name}', condition: 'always' };
+  const s = data || { id: Date.now(), delay: 0, delayUnit: 'hours', template: 'jobupdate', vars: '{name}', condition: 'always', buttonParam: '' };
   if (!data) steps.push(s);
   renderSteps();
 }
@@ -585,6 +585,12 @@ function renderSteps() {
             <option value="always" ${s.condition==='always'?'selected':''}>Always send</option>
             <option value="no_reply" ${s.condition==='no_reply'?'selected':''}>Only if no reply</option>
           </select>
+        </div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <div class="col">
+          <label>Button URL param (optional — leave blank if no button in template)</label>
+          <input type="text" value="${s.buttonParam||''}" onchange="steps[${i}].buttonParam=this.value" placeholder="e.g. apply?ref=wa"/>
         </div>
       </div>`;
     c.appendChild(div);
@@ -685,18 +691,32 @@ function updateMetrics() {
 }
 
 /* ── API ── */
-async function sendWA(phone, templateName, name) {
+async function sendWA(phone, templateName, name, buttonParam) {
+  // Strip +91 or + prefix — SmartPing expects raw number
+  const dest = phone.replace(/^\+91|^\+/, '').trim();
+
   const payload = {
     apiKey: API_KEY,
     campaignName: templateName,
-    destination: phone,
+    destination: dest,
     userName: "Terratern",
-    templateParams: [name],
+    templateParams: [`$FirstName`],
     source: "drip-dashboard",
     media: {},
-    buttons: [],
+    buttons: buttonParam ? [
+      {
+        type: "button",
+        sub_type: "URL",
+        index: 0,
+        parameters: [{ type: "text", text: buttonParam }]
+      }
+    ] : [],
     carouselCards: [],
-    location: {}
+    location: {},
+    attributes: {},
+    paramsFallbackValue: {
+      FirstName: name || "user"
+    }
   };
   const res = await fetch(API_URL, {
     method: 'POST',
@@ -735,10 +755,10 @@ async function launchCampaign() {
       }
 
       const varVal = step.vars.replace('{name}', c.name);
-      addLog(`${c.name} · step ${si+1} · sending "${step.template}" · {{1}}="${varVal}"`, 'info');
+      addLog(`${c.name} · step ${si+1} · sending "${step.template}" · FirstName="${varVal}"${step.buttonParam?` · btn="${step.buttonParam}"`:''} `, 'info');
 
       try {
-        const { ok, status, data } = await sendWA(c.phone, step.template, varVal);
+        const { ok, status, data } = await sendWA(c.phone, step.template, varVal, step.buttonParam||'');
         if (ok || status === 200) {
           c.sentSteps.push(si);
           c.step = si + 1;
@@ -793,7 +813,7 @@ function clearLog() {
 function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 /* ── INIT ── */
-addStep({ id: 1, delay: 0, delayUnit: 'hours', template: 'jobupdate', vars: '{name}', condition: 'always' });
+addStep({ id: 1, delay: 0, delayUnit: 'hours', template: 'jobupdate', vars: '{name}', condition: 'always', buttonParam: '' });
 </script>
 </body>
 </html>
