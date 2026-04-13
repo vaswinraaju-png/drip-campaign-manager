@@ -6,885 +6,739 @@
 <title>WA Drip Engine · TerraTern</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
-  :root {
-    --bg: #0a0a0a;
-    --bg2: #111111;
-    --bg3: #181818;
-    --border: rgba(255,255,255,0.08);
-    --border2: rgba(255,255,255,0.14);
-    --accent: #c8f135;
-    --accent2: #a8d41e;
-    --text: #f0f0ee;
-    --text2: #888880;
-    --text3: #555550;
-    --success: #4ade80;
-    --danger: #f87171;
-    --warning: #fbbf24;
-    --info: #60a5fa;
-    --font-head: 'Syne', sans-serif;
-    --font-body: 'Instrument Sans', sans-serif;
-    --font-mono: 'DM Mono', monospace;
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { font-size: 15px; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font-body);
-    min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  /* LAYOUT */
-  .shell { display: flex; min-height: 100vh; }
-  .sidebar {
-    width: 220px;
-    flex-shrink: 0;
-    background: var(--bg2);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    padding: 24px 0;
-    position: sticky;
-    top: 0;
-    height: 100vh;
-  }
-  .main { flex: 1; padding: 32px 36px; overflow-y: auto; }
-
-  /* SIDEBAR */
-  .brand {
-    padding: 0 20px 24px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 20px;
-  }
-  .brand-name {
-    font-family: var(--font-head);
-    font-size: 16px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    color: var(--accent);
-  }
-  .brand-sub { font-size: 11px; color: var(--text3); margin-top: 2px; font-family: var(--font-mono); }
-
-  .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-size: 13px;
-    color: var(--text2);
-    border-left: 2px solid transparent;
-    transition: all 0.15s;
-    user-select: none;
-  }
-  .nav-item:hover { color: var(--text); background: rgba(255,255,255,0.03); }
-  .nav-item.active { color: var(--accent); border-left-color: var(--accent); background: rgba(200,241,53,0.05); }
-  .nav-icon { width: 16px; height: 16px; opacity: 0.7; flex-shrink: 0; }
-  .nav-item.active .nav-icon { opacity: 1; }
-
-  .sidebar-footer {
-    margin-top: auto;
-    padding: 16px 20px;
-    border-top: 1px solid var(--border);
-  }
-  .connected-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(74,222,128,0.1);
-    color: var(--success);
-    font-size: 11px;
-    padding: 4px 10px;
-    border-radius: 20px;
-    border: 1px solid rgba(74,222,128,0.2);
-    font-family: var(--font-mono);
-  }
-  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); animation: pulse 2s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-
-  /* PANELS */
-  .panel { display: none; animation: fadeIn 0.2s ease; }
-  .panel.active { display: block; }
-  @keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
-
-  /* PAGE HEADER */
-  .page-header { margin-bottom: 28px; }
-  .page-title {
-    font-family: var(--font-head);
-    font-size: 26px;
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    color: var(--text);
-  }
-  .page-sub { font-size: 13px; color: var(--text2); margin-top: 4px; }
-
-  /* CARDS */
-  .card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px 22px;
-    margin-bottom: 16px;
-  }
-  .card-title {
-    font-family: var(--font-head);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text3);
-    margin-bottom: 16px;
-  }
-
-  /* FORM ELEMENTS */
-  label { font-size: 12px; color: var(--text2); display: block; margin-bottom: 5px; }
-  input, select, textarea {
-    width: 100%;
-    background: var(--bg3);
-    border: 1px solid var(--border2);
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 13px;
-    font-family: var(--font-body);
-    color: var(--text);
-    outline: none;
-    transition: border-color 0.15s;
-  }
-  input:focus, select:focus, textarea:focus { border-color: var(--accent); }
-  select option { background: var(--bg3); }
-  textarea { resize: vertical; min-height: 80px; font-family: var(--font-mono); font-size: 12px; }
-
-  .row { display: flex; gap: 12px; flex-wrap: wrap; }
-  .col { flex: 1; min-width: 140px; }
-  .col-sm { flex: 0 0 90px; min-width: 90px; }
-
-  /* BUTTONS */
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    font-family: var(--font-body);
-    padding: 8px 16px;
-    border-radius: 8px;
-    border: 1px solid var(--border2);
-    background: transparent;
-    color: var(--text);
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .btn:hover { background: var(--bg3); border-color: rgba(255,255,255,0.2); }
-  .btn-accent {
-    background: var(--accent);
-    color: #0a0a0a;
-    border-color: var(--accent);
-    font-weight: 500;
-  }
-  .btn-accent:hover { background: var(--accent2); border-color: var(--accent2); }
-  .btn-danger { color: var(--danger); border-color: rgba(248,113,113,0.3); }
-  .btn-danger:hover { background: rgba(248,113,113,0.08); }
-  .btn-sm { font-size: 12px; padding: 5px 12px; }
-
-  /* STEP CARDS */
-  .steps-wrap { position: relative; }
-  .step-card {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 16px;
-    margin-bottom: 4px;
-    position: relative;
-  }
-  .step-card:hover { border-color: var(--border2); }
-  .step-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 12px;
-  }
-  .step-badge {
-    background: rgba(200,241,53,0.12);
-    color: var(--accent);
-    font-size: 10px;
-    font-family: var(--font-mono);
-    font-weight: 500;
-    padding: 2px 8px;
-    border-radius: 20px;
-    border: 1px solid rgba(200,241,53,0.2);
-  }
-  .step-del {
-    margin-left: auto;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--text3);
-    font-size: 16px;
-    line-height: 1;
-    padding: 2px 6px;
-    border-radius: 4px;
-    transition: color 0.15s;
-  }
-  .step-del:hover { color: var(--danger); }
-  .connector {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 4px 16px;
-    color: var(--text3);
-    font-size: 11px;
-    font-family: var(--font-mono);
-  }
-  .connector::before, .connector::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-
-  /* STATUS PILLS */
-  .pill {
-    display: inline-flex;
-    align-items: center;
-    font-size: 11px;
-    font-family: var(--font-mono);
-    padding: 2px 9px;
-    border-radius: 20px;
-  }
-  .pill-queued { background: rgba(136,136,128,0.15); color: var(--text2); }
-  .pill-pending { background: rgba(251,191,36,0.12); color: var(--warning); }
-  .pill-sent { background: rgba(74,222,128,0.12); color: var(--success); }
-  .pill-failed { background: rgba(248,113,113,0.12); color: var(--danger); }
-
-  /* METRICS */
-  .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
-  .metric-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 16px;
-  }
-  .metric-val {
-    font-family: var(--font-head);
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--text);
-    line-height: 1;
-  }
-  .metric-lbl { font-size: 11px; color: var(--text3); margin-top: 6px; }
-
-  /* CONTACT ROWS */
-  .contact-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .contact-row:last-child { border-bottom: none; }
-  .avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: rgba(200,241,53,0.1);
-    border: 1px solid rgba(200,241,53,0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--accent);
-    flex-shrink: 0;
-    font-family: var(--font-head);
-  }
-  .contact-name { font-size: 13px; font-weight: 500; }
-  .contact-phone { font-size: 11px; color: var(--text3); font-family: var(--font-mono); }
-  .progress-bar { height: 3px; background: var(--border); border-radius: 2px; margin-top: 5px; width: 100px; }
-  .progress-fill { height: 3px; background: var(--accent); border-radius: 2px; transition: width 0.4s; }
-
-  /* LOG */
-  .log-row {
-    display: flex;
-    gap: 12px;
-    padding: 7px 0;
-    border-bottom: 1px solid var(--border);
-    font-family: var(--font-mono);
-    font-size: 12px;
-    align-items: flex-start;
-  }
-  .log-row:last-child { border-bottom: none; }
-  .log-time { color: var(--text3); flex-shrink: 0; width: 80px; }
-  .log-ok { color: var(--success); }
-  .log-err { color: var(--danger); }
-  .log-info { color: var(--text2); }
-  .log-warn { color: var(--warning); }
-
-  /* HINT */
-  .hint { font-size: 11px; color: var(--text3); margin-top: 5px; font-family: var(--font-mono); }
-
-  /* DIVIDER */
-  .divider { height: 1px; background: var(--border); margin: 16px 0; }
-
-  /* ACTION ROW */
-  .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 4px; }
-
-  /* EMPTY STATE */
-  .empty { font-size: 13px; color: var(--text3); text-align: center; padding: 24px 0; font-family: var(--font-mono); }
-
-  @media(max-width: 768px) {
-    .sidebar { width: 60px; }
-    .brand-name, .brand-sub, .nav-label, .sidebar-footer { display: none; }
-    .nav-item { padding: 12px; justify-content: center; }
-    .main { padding: 20px 16px; }
-    .metrics { grid-template-columns: repeat(2,1fr); }
-  }
+:root{--bg:#0a0a0a;--bg2:#111111;--bg3:#181818;--bg4:#1e1e1e;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);--accent:#c8f135;--accent2:#a8d41e;--text:#f0f0ee;--text2:#888880;--text3:#4a4a46;--success:#4ade80;--danger:#f87171;--warning:#fbbf24;--info:#60a5fa;--fh:'Syne',sans-serif;--fb:'Instrument Sans',sans-serif;--fm:'DM Mono',monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:15px}
+body{background:var(--bg);color:var(--text);font-family:var(--fb);min-height:100vh;-webkit-font-smoothing:antialiased}
+.shell{display:flex;min-height:100vh}
+.sidebar{width:220px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:24px 0;position:sticky;top:0;height:100vh;overflow:hidden}
+.main{flex:1;padding:32px 36px;overflow-y:auto}
+.brand{padding:0 20px 20px;border-bottom:1px solid var(--border);margin-bottom:16px}
+.brand-name{font-family:var(--fh);font-size:16px;font-weight:700;letter-spacing:-.02em;color:var(--accent)}
+.brand-sub{font-size:11px;color:var(--text3);margin-top:2px;font-family:var(--fm)}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 20px;cursor:pointer;font-size:13px;color:var(--text2);border-left:2px solid transparent;transition:all .15s;user-select:none}
+.nav-item:hover{color:var(--text);background:rgba(255,255,255,.03)}
+.nav-item.active{color:var(--accent);border-left-color:var(--accent);background:rgba(200,241,53,.05)}
+.nav-ico{width:15px;height:15px;flex-shrink:0;opacity:.6}
+.nav-item.active .nav-ico{opacity:1}
+.sidebar-footer{margin-top:auto;padding:16px 20px;border-top:1px solid var(--border)}
+.conn-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(74,222,128,.1);color:var(--success);font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid rgba(74,222,128,.2);font-family:var(--fm)}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--success);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.wizard{display:flex;align-items:center;margin-bottom:28px}
+.wz-step{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text3);font-family:var(--fm);white-space:nowrap}
+.wz-num{width:24px;height:24px;border-radius:50%;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .2s;flex-shrink:0}
+.wz-step.active .wz-num{background:var(--accent);border-color:var(--accent);color:#0a0a0a;font-weight:600}
+.wz-step.done .wz-num{background:rgba(74,222,128,.15);border-color:var(--success);color:var(--success)}
+.wz-step.active{color:var(--text)}
+.wz-step.done{color:var(--text2)}
+.wz-line{flex:1;height:1px;background:var(--border);margin:0 8px}
+.panel{display:none;animation:fadeIn .2s ease}
+.panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.ph{margin-bottom:22px;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.ph-title{font-family:var(--fh);font-size:24px;font-weight:700;letter-spacing:-.03em}
+.ph-sub{font-size:13px;color:var(--text2);margin-top:3px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:14px}
+.card-title{font-family:var(--fh);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:14px}
+label{font-size:12px;color:var(--text2);display:block;margin-bottom:5px}
+input,select,textarea{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:8px 11px;font-size:13px;font-family:var(--fb);color:var(--text);outline:none;transition:border-color .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+select option{background:var(--bg3)}
+textarea{resize:vertical;min-height:70px;font-family:var(--fm);font-size:12px}
+.row{display:flex;gap:12px;flex-wrap:wrap}
+.col{flex:1;min-width:130px}
+.col-sm{flex:0 0 85px}
+.col-xs{flex:0 0 110px}
+.btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-family:var(--fb);padding:8px 16px;border-radius:8px;border:1px solid var(--border2);background:transparent;color:var(--text);cursor:pointer;transition:all .15s;white-space:nowrap}
+.btn:hover{background:var(--bg3);border-color:rgba(255,255,255,.2)}
+.btn-accent{background:var(--accent);color:#0a0a0a;border-color:var(--accent);font-weight:500}
+.btn-accent:hover{background:var(--accent2);border-color:var(--accent2)}
+.btn-danger{color:var(--danger);border-color:rgba(248,113,113,.25)}
+.btn-danger:hover{background:rgba(248,113,113,.08)}
+.btn-sm{font-size:12px;padding:5px 12px}
+.btn-ghost{border-color:transparent;color:var(--text2)}
+.btn-ghost:hover{color:var(--text);background:var(--bg3);border-color:var(--border2)}
+.filter-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:14px}
+.tbl-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead tr{background:var(--bg3)}
+thead th{padding:9px 12px;text-align:left;font-weight:500;color:var(--text2);font-size:11px;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid var(--border)}
+tbody tr{border-bottom:1px solid var(--border);transition:background .1s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:var(--bg3)}
+tbody td{padding:8px 12px;color:var(--text);vertical-align:middle}
+.cb{width:14px;height:14px;accent-color:var(--accent);cursor:pointer}
+.pill{display:inline-flex;align-items:center;font-size:10px;font-family:var(--fm);padding:2px 8px;border-radius:20px;white-space:nowrap}
+.pill-q{background:rgba(136,136,128,.15);color:var(--text2)}
+.pill-p{background:rgba(251,191,36,.12);color:var(--warning)}
+.pill-s{background:rgba(74,222,128,.12);color:var(--success)}
+.pill-f{background:rgba(248,113,113,.12);color:var(--danger)}
+.pill-sk{background:rgba(96,165,250,.1);color:var(--info)}
+.pill-cap{background:rgba(248,113,113,.2);color:var(--danger);border:1px solid rgba(248,113,113,.3)}
+.step-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:4px}
+.step-card:hover{border-color:var(--border2)}
+.step-hdr{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.step-badge{background:rgba(200,241,53,.12);color:var(--accent);font-size:10px;font-family:var(--fm);font-weight:500;padding:2px 8px;border-radius:20px;border:1px solid rgba(200,241,53,.2)}
+.step-del{margin-left:auto;background:none;border:none;cursor:pointer;color:var(--text3);font-size:18px;line-height:1;padding:2px 6px;border-radius:4px;transition:color .15s}
+.step-del:hover{color:var(--danger)}
+.connector{display:flex;align-items:center;gap:8px;padding:4px 16px;color:var(--text3);font-size:11px;font-family:var(--fm)}
+.connector::before,.connector::after{content:'';flex:1;height:1px;background:var(--border)}
+.metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px}
+.metric-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px}
+.metric-val{font-family:var(--fh);font-size:26px;font-weight:700;line-height:1}
+.metric-lbl{font-size:11px;color:var(--text3);margin-top:5px}
+.c-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
+.c-row:last-child{border-bottom:none}
+.avatar{width:30px;height:30px;border-radius:50%;background:rgba(200,241,53,.1);border:1px solid rgba(200,241,53,.2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--accent);flex-shrink:0;font-family:var(--fh)}
+.pbar{height:3px;background:var(--border);border-radius:2px;margin-top:4px;width:80px}
+.pfill{height:3px;background:var(--accent);border-radius:2px;transition:width .4s}
+.log-row{display:flex;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);font-family:var(--fm);font-size:12px;align-items:flex-start}
+.log-row:last-child{border-bottom:none}
+.log-time{color:var(--text3);flex-shrink:0;width:75px}
+.log-ok{color:var(--success)}.log-err{color:var(--danger)}.log-warn{color:var(--warning)}.log-info{color:var(--text2)}.log-skip{color:var(--info)}
+.act-bar{display:flex;gap:8px;justify-content:space-between;align-items:center;margin-top:8px;flex-wrap:wrap}
+.act-right{display:flex;gap:8px}
+.hint{font-size:11px;color:var(--text3);margin-top:4px;font-family:var(--fm)}
+.divider{height:1px;background:var(--border);margin:14px 0}
+.empty{font-size:13px;color:var(--text3);text-align:center;padding:24px 0;font-family:var(--fm)}
+@media(max-width:768px){.sidebar{width:56px}.brand-name,.brand-sub,.nav-label,.sidebar-footer{display:none}.nav-item{padding:12px;justify-content:center}.main{padding:16px}.metrics{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
-
 <div class="shell">
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="brand">
-      <div class="brand-name">WA Drip</div>
-      <div class="brand-sub">TerraTern · SmartPing</div>
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-name">WA Drip</div>
+    <div class="brand-sub">TerraTern · sendmsg</div>
+  </div>
+  <nav>
+    <div class="nav-item active" onclick="goStep(1)">
+      <svg class="nav-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="4" r="2.5"/><path d="M1 13c0-2.8 2.2-5 5-5"/><circle cx="12" cy="10" r="2.5"/></svg>
+      <span class="nav-label">Audience</span>
     </div>
-
-    <nav>
-      <div class="nav-item active" onclick="switchTab('builder')">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-          <rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/>
-          <rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/>
-        </svg>
-        <span class="nav-label">Builder</span>
-      </div>
-      <div class="nav-item" onclick="switchTab('contacts')">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-          <circle cx="6" cy="5" r="3"/><path d="M1 14c0-3 2-5 5-5"/><circle cx="12" cy="10" r="3"/>
-        </svg>
-        <span class="nav-label">Contacts</span>
-      </div>
-      <div class="nav-item" onclick="switchTab('monitor')">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-          <polyline points="1,11 5,7 8,9 11,4 15,8"/><line x1="1" y1="14" x2="15" y2="14"/>
-        </svg>
-        <span class="nav-label">Monitor</span>
-      </div>
-      <div class="nav-item" onclick="switchTab('log')">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-          <rect x="2" y="2" width="12" height="12" rx="2"/>
-          <line x1="5" y1="6" x2="11" y2="6"/><line x1="5" y1="9" x2="11" y2="9"/><line x1="5" y1="12" x2="8" y2="12"/>
-        </svg>
-        <span class="nav-label">Activity Log</span>
-      </div>
-    </nav>
-
-    <div class="sidebar-footer">
-      <div class="connected-pill">
-        <div class="dot"></div>
-        SmartPing
-      </div>
+    <div class="nav-item" onclick="goStep(2)">
+      <svg class="nav-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>
+      <span class="nav-label">Sequence</span>
     </div>
-  </aside>
-
-  <!-- MAIN -->
-  <main class="main">
-
-    <!-- BUILDER -->
-    <div id="panel-builder" class="panel active">
-      <div class="page-header">
-        <div class="page-title">Campaign Builder</div>
-        <div class="page-sub">Define your drip sequence and trigger rules</div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">Campaign details</div>
-        <div class="row">
-          <div class="col">
-            <label>Campaign name</label>
-            <input id="camp-name" type="text" placeholder="e.g. IELTS Drip April 2026"/>
-          </div>
-          <div class="col">
-            <label>Trigger event</label>
-            <select id="trigger">
-              <option>Lead fills form</option>
-              <option>Lead status = Applied</option>
-              <option>Lead status = Counselled</option>
-              <option>Lead status = Document Pending</option>
-              <option>Manual trigger</option>
-              <option>Custom (SQL)</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">Drip sequence</div>
-        <div id="steps-container"></div>
-        <button class="btn" style="width:100%;margin-top:8px;justify-content:center" onclick="addStep()">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"><line x1="7" y1="1" x2="7" y2="13"/><line x1="1" y1="7" x2="13" y2="7"/></svg>
-          Add step
-        </button>
-      </div>
-
-      <div class="actions">
-        <button class="btn btn-sm" onclick="clearSteps()">Reset</button>
-        <button class="btn btn-accent" onclick="saveCampaign()">Save campaign →</button>
-      </div>
+    <div class="nav-item" onclick="goStep(3)">
+      <svg class="nav-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h8M2 12h5"/></svg>
+      <span class="nav-label">Review</span>
     </div>
+    <div class="nav-item" onclick="goStep(4)">
+      <svg class="nav-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="1,11 5,7 8,9 11,4 15,8"/><line x1="1" y1="14" x2="15" y2="14"/></svg>
+      <span class="nav-label">Monitor</span>
+    </div>
+    <div class="nav-item" onclick="goStep(5)">
+      <svg class="nav-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="2"/><line x1="5" y1="6" x2="11" y2="6"/><line x1="5" y1="9" x2="11" y2="9"/><line x1="5" y1="12" x2="8" y2="12"/></svg>
+      <span class="nav-label">Log</span>
+    </div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="conn-pill"><div class="dot"></div>Live</div>
+  </div>
+</aside>
 
-    <!-- CONTACTS -->
-    <div id="panel-contacts" class="panel">
-      <div class="page-header">
-        <div class="page-title">Contacts</div>
-        <div class="page-sub">Paste leads · name maps to {{1}} in template</div>
-      </div>
+<main class="main">
+<div class="wizard">
+  <div class="wz-step active" id="wz1"><div class="wz-num">1</div><span>Audience</span></div>
+  <div class="wz-line"></div>
+  <div class="wz-step" id="wz2"><div class="wz-num">2</div><span>Sequence</span></div>
+  <div class="wz-line"></div>
+  <div class="wz-step" id="wz3"><div class="wz-num">3</div><span>Review</span></div>
+  <div class="wz-line"></div>
+  <div class="wz-step" id="wz4"><div class="wz-num">4</div><span>Monitor</span></div>
+  <div class="wz-line"></div>
+  <div class="wz-step" id="wz5"><div class="wz-num">5</div><span>Log</span></div>
+</div>
 
-      <div class="card">
-        <div class="card-title">Paste audience</div>
-        <label>One per line — format: +91XXXXXXXXXX,Name</label>
-        <textarea id="contacts-raw" placeholder="+917094956963,Achu&#10;+919876543210,Rahul&#10;+918765432109,Priya"></textarea>
-        <div class="hint">Copy-paste directly from Metabase query result (phone,name columns)</div>
-        <div style="display:flex;gap:8px;margin-top:12px">
-          <button class="btn btn-accent btn-sm" onclick="parseContacts()">Parse contacts</button>
-          <button class="btn btn-sm" onclick="addTestLead()">+ Add test lead (Achu)</button>
-          <button class="btn btn-sm btn-danger" onclick="clearContacts()">Clear</button>
-        </div>
-      </div>
+<!-- STEP 1: AUDIENCE -->
+<div id="panel-1" class="panel active">
+  <div class="ph">
+    <div><div class="ph-title">Audience</div><div class="ph-sub">Filter leads from DB · select who to message</div></div>
+    <button class="btn btn-sm btn-ghost" onclick="loadDB()">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 8A6 6 0 112 8"/><path d="M14 2v6h-6"/></svg>
+      Reload DB
+    </button>
+  </div>
+  <div class="card">
+    <div class="card-title">Filters</div>
+    <div class="filter-grid">
+      <div><label>Lead status</label><select id="f-status" onchange="applyFilters()"><option value="">All</option></select></div>
+      <div><label>Work experience</label><select id="f-exp" onchange="applyFilters()"><option value="">All</option></select></div>
+      <div><label>Highest education</label><select id="f-edu" onchange="applyFilters()"><option value="">All</option></select></div>
+      <div><label>Application</label><select id="f-app" onchange="applyFilters()"><option value="">All</option></select></div>
+      <div><label>Created from</label><input type="date" id="f-date-from" onchange="applyFilters()"/></div>
+      <div><label>Created to</label><input type="date" id="f-date-to" onchange="applyFilters()"/></div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <button class="btn btn-sm" onclick="selectAll()">Select all visible</button>
+      <button class="btn btn-sm btn-ghost" onclick="deselectAll()">Deselect all</button>
+      <span id="sel-count" style="font-size:12px;color:var(--text2)">0 selected</span>
+      <span id="db-status" style="font-size:11px;color:var(--text3);margin-left:auto;font-family:var(--fm)"></span>
+    </div>
+  </div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <div id="db-loading" class="empty" style="padding:32px">Loading DB from Google Sheets…</div>
+    <div class="tbl-wrap" id="tbl-wrap" style="display:none">
+      <table>
+        <thead><tr>
+          <th><input type="checkbox" class="cb" id="cb-all" onchange="toggleAll(this)"/></th>
+          <th>Name</th><th>Mobile</th><th>Application</th><th>Lead Status</th>
+          <th>Work Exp</th><th>Education</th><th>BDE</th><th>Created</th><th>Msg Count</th>
+        </tr></thead>
+        <tbody id="db-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="act-bar">
+    <span style="font-size:12px;color:var(--text3)">Select contacts then proceed →</span>
+    <button class="btn btn-accent" onclick="nextStep(1)">Next: Sequence →</button>
+  </div>
+</div>
 
-      <div class="card" id="contacts-preview" style="display:none">
-        <div class="card-title">Preview — <span id="contact-count">0</span> contacts</div>
-        <div id="contacts-list"></div>
+<!-- STEP 2: SEQUENCE -->
+<div id="panel-2" class="panel">
+  <div class="ph">
+    <div><div class="ph-title">Sequence</div><div class="ph-sub">Build your drip steps · template · timing</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Campaign details</div>
+    <div class="row">
+      <div class="col"><label>Campaign name</label><input id="camp-name" type="text" placeholder="e.g. GOC Drip April 2026"/></div>
+      <div class="col"><label>Trigger</label>
+        <select id="trigger">
+          <option>Manual launch</option>
+          <option>Lead status = Applied</option>
+          <option>Lead status = Counselled</option>
+          <option>Lead status = Document Pending</option>
+        </select>
       </div>
     </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Drip steps</div>
+    <div id="steps-container"></div>
+    <button class="btn btn-ghost" style="width:100%;justify-content:center;margin-top:8px" onclick="addStep()">+ Add step</button>
+  </div>
+  <div class="act-bar">
+    <button class="btn btn-ghost" onclick="goStep(1)">← Back</button>
+    <button class="btn btn-accent" onclick="nextStep(2)">Next: Review →</button>
+  </div>
+</div>
 
-    <!-- MONITOR -->
-    <div id="panel-monitor" class="panel">
-      <div class="page-header">
-        <div class="page-title">Monitor</div>
-        <div class="page-sub">Live campaign progress tracker</div>
-      </div>
-
-      <div class="metrics">
-        <div class="metric-card">
-          <div class="metric-val" id="m-total">0</div>
-          <div class="metric-lbl">Total contacts</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-val" id="m-sent" style="color:var(--success)">0</div>
-          <div class="metric-lbl">Fully sent</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-val" id="m-pending" style="color:var(--warning)">0</div>
-          <div class="metric-lbl">Pending</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-val" id="m-failed" style="color:var(--danger)">0</div>
-          <div class="metric-lbl">Failed</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">Per-contact status</div>
-        <div id="monitor-list"><div class="empty">No campaign running yet. Load contacts and launch.</div></div>
-      </div>
-
-      <div style="display:flex;gap:10px;margin-top:4px">
-        <button class="btn btn-accent" onclick="launchCampaign()">Launch drip →</button>
-        <button class="btn btn-danger" onclick="stopCampaign()">⏹ Stop</button>
-      </div>
+<!-- STEP 3: REVIEW -->
+<div id="panel-3" class="panel">
+  <div class="ph">
+    <div><div class="ph-title">Review & Launch</div><div class="ph-sub">Verify everything before sending</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Campaign summary</div>
+    <div id="review-summary"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Pre-flight · send cap check</div>
+    <div id="preflight-status"><div class="empty" style="padding:12px 0">Click "Run checks" to verify send limits from Google Sheet logs</div></div>
+    <div style="margin-top:10px">
+      <button class="btn btn-sm" onclick="runPreflight()">Run checks</button>
     </div>
-
-    <!-- LOG -->
-    <div id="panel-log" class="panel">
-      <div class="page-header">
-        <div class="page-title">Activity Log</div>
-        <div class="page-sub">Timestamped record of all API calls and events</div>
-      </div>
-
-      <div class="card">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-          <div class="card-title" style="margin:0">Log entries</div>
-          <button class="btn btn-sm btn-danger" onclick="clearLog()">Clear log</button>
-        </div>
-        <div id="log-container"><div class="empty">No activity yet.</div></div>
-      </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Selected contacts (<span id="rev-cnt">0</span>)</div>
+    <div id="review-contacts"></div>
+  </div>
+  <div class="act-bar">
+    <button class="btn btn-ghost" onclick="goStep(2)">← Back</button>
+    <div class="act-right">
+      <button class="btn btn-danger" onclick="stopCampaign()">⏹ Stop</button>
+      <button class="btn btn-accent" onclick="launchCampaign()">🚀 Launch drip</button>
     </div>
+  </div>
+</div>
 
-  </main>
+<!-- STEP 4: MONITOR -->
+<div id="panel-4" class="panel">
+  <div class="ph">
+    <div><div class="ph-title">Monitor</div><div class="ph-sub">Live campaign progress</div></div>
+    <div class="act-right">
+      <button class="btn btn-danger btn-sm" onclick="stopCampaign()">⏹ Stop</button>
+      <button class="btn btn-sm btn-ghost" onclick="goStep(5)">View log →</button>
+    </div>
+  </div>
+  <div class="metrics">
+    <div class="metric-card"><div class="metric-val" id="m-total">0</div><div class="metric-lbl">Total</div></div>
+    <div class="metric-card"><div class="metric-val" id="m-sent" style="color:var(--success)">0</div><div class="metric-lbl">Sent</div></div>
+    <div class="metric-card"><div class="metric-val" id="m-pending" style="color:var(--warning)">0</div><div class="metric-lbl">Pending</div></div>
+    <div class="metric-card"><div class="metric-val" id="m-failed" style="color:var(--danger)">0</div><div class="metric-lbl">Failed</div></div>
+    <div class="metric-card"><div class="metric-val" id="m-skipped" style="color:var(--info)">0</div><div class="metric-lbl">Skipped</div></div>
+  </div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <div style="padding:12px 16px;border-bottom:1px solid var(--border)"><div class="card-title" style="margin:0">Per-contact status</div></div>
+    <div id="monitor-list" style="padding:0 16px"><div class="empty">No campaign running yet.</div></div>
+  </div>
+</div>
+
+<!-- STEP 5: LOG -->
+<div id="panel-5" class="panel">
+  <div class="ph">
+    <div><div class="ph-title">Activity Log</div><div class="ph-sub">Full record · never auto-cleared · persists on refresh</div></div>
+    <div class="act-right">
+      <button class="btn btn-sm btn-ghost" onclick="exportLog()">Export CSV</button>
+      <button class="btn btn-sm btn-danger" onclick="if(confirm('Clear log?'))clearLog()">Clear log</button>
+    </div>
+  </div>
+  <div class="card"><div id="log-container"><div class="empty">No activity yet.</div></div></div>
+</div>
+</main>
 </div>
 
 <script>
-const API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NmU5MTQ2ZjJjOGUzMGJlY2FlMDVkYiIsIm5hbWUiOiJUZXJyYXRlcm4iLCJhcHBOYW1lIjoiQWlTZW5zeSIsImNsaWVudElkIjoiNjc2ZTkxNDZmMmM4ZTMwYmVjYWUwNWNlIiwiYWN0aXZlUGxhbiI6IlBST19NT05USExZIiwiaWF0IjoxNzY5Njc2MzQ2fQ.Oj6veBiRUaPtWZ1yaVgTAp-q_JvCfXC8zuU42_T4rM4";
-const API_URL = "https://backend.aisensy.com/campaign/t1/api/v2";
+const GAS_URL='https://script.google.com/macros/s/AKfycbw_C69HyzJG8TH-d5OwsZjVkqQJirADCiCK7KJYBVB199H5QeNwzsn3mFT4OPMgk8-PQQ/exec';
+const API_URL='https://media.sendmsg.in/mediasend';
+const API_USER='terratern';
+const API_PASS='TtBFAKMDLkpJ';
+const API_FROM='918123378405';
+const SEND_CAP=5;
+const STORE_KEY='wd3_state';
 
-const STORE_KEY = 'wd_state';
+let dbAll=[],dbFiltered=[],contacts=[],steps=[],logs=[],sendCounts={};
+let campaignRunning=false;
 
-function saveState() {
-  try {
-    localStorage.setItem(STORE_KEY, JSON.stringify({ steps, contacts, logs, campName: document.getElementById('camp-name')?.value||'', trigger: document.getElementById('trigger')?.selectedIndex||0 }));
-  } catch(e) {}
+/* PERSIST */
+function saveState(){
+  try{
+    localStorage.setItem(STORE_KEY,JSON.stringify({
+      steps,contacts,logs,sendCounts,
+      campName:document.getElementById('camp-name')?.value||'',
+      triggerIdx:document.getElementById('trigger')?.selectedIndex||0
+    }));
+  }catch(e){}
+}
+function loadSaved(){
+  try{return JSON.parse(localStorage.getItem(STORE_KEY)||'null');}catch(e){return null;}
 }
 
-function loadState() {
-  try {
-    const raw = localStorage.getItem(STORE_KEY);
-    if (!raw) return null;
-    return JSON.parse(raw);
-  } catch(e) { return null; }
+/* WIZARD */
+function goStep(n){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+n).classList.add('active');
+  document.querySelectorAll('.nav-item')[n-1]?.classList.add('active');
+  for(let i=1;i<=5;i++){
+    const el=document.getElementById('wz'+i);
+    el.className='wz-step'+(i===n?' active':i<n?' done':'');
+  }
+  if(n===3)buildReview();
+  if(n===4)renderMonitor();
+  if(n===5)renderLog();
 }
 
-let steps = [];
-let contacts = [];
-let logs = [];
-let campaignRunning = false;
-
-/* ── NAV ── */
-function switchTab(t) {
-  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelector(`[onclick="switchTab('${t}')"]`).classList.add('active');
-  document.getElementById('panel-' + t).classList.add('active');
-  if (t === 'monitor') renderMonitor();
+function nextStep(from){
+  if(from===1){
+    const sel=getSelected();
+    if(!sel.length){alert('Select at least one contact.');return;}
+    contacts=sel.map(r=>({
+      phone:String(r.mobile||'').replace(/^\+/,'').trim(),
+      name:r.fullname||r.name||'Lead',
+      bde_number:r.bde_number||r.bde||'',
+      bde_name:r.bde_name||r.bde||'',
+      status:'queued',sentSteps:[],skipReason:''
+    }));
+    saveState();
+  }
+  if(from===2){
+    if(!document.getElementById('camp-name').value.trim()){alert('Enter a campaign name.');return;}
+    if(!steps.length){alert('Add at least one step.');return;}
+    saveState();
+  }
+  goStep(from+1);
 }
 
-/* ── STEPS ── */
-function addStep(data) {
-  const s = data || { id: Date.now(), delay: 0, delayUnit: 'hours', template: 'jobupdate', vars: '{name}', condition: 'always', buttonParam: '' };
-  if (!data) steps.push(s);
-  renderSteps();
-  saveState();
+/* DB LOAD */
+async function loadDB(){
+  document.getElementById('db-loading').style.display='block';
+  document.getElementById('db-loading').textContent='Loading DB from Google Sheets…';
+  document.getElementById('tbl-wrap').style.display='none';
+  document.getElementById('db-status').textContent='Fetching…';
+  try{
+    const res=await fetch(GAS_URL+'?tab=DB');
+    const data=await res.json();
+    if(!data.success)throw new Error('Sheet error');
+    dbAll=data.data.filter(r=>r.mobile||r.Mobile).map(r=>{
+      const n={};
+      Object.keys(r).forEach(k=>n[k.toLowerCase().trim().replace(/\s+/g,'_')]=r[k]);
+      return n;
+    });
+    populateFilters();
+    applyFilters();
+    document.getElementById('db-status').textContent=dbAll.length+' rows loaded';
+    addLog('DB loaded: '+dbAll.length+' leads','info');
+  }catch(e){
+    document.getElementById('db-loading').textContent='Failed to load. Check GAS URL & permissions.';
+    addLog('DB load failed: '+e.message,'err');
+  }
 }
 
-function renderSteps() {
-  const c = document.getElementById('steps-container');
-  c.innerHTML = '';
-  steps.forEach((s, i) => {
-    if (i > 0) {
-      const conn = document.createElement('div');
-      conn.className = 'connector';
-      conn.textContent = `↓ after ${steps[i-1].delay} ${steps[i-1].delayUnit}`;
+function populateFilters(){
+  const unique=key=>[...new Set(dbAll.map(r=>r[key]).filter(v=>v!==undefined&&v!==''))].sort();
+  const fill=(id,vals)=>{
+    const el=document.getElementById(id);
+    const cur=el.value;
+    el.innerHTML='<option value="">All</option>'+vals.map(v=>`<option value="${v}">${v}</option>`).join('');
+    if(cur)el.value=cur;
+  };
+  fill('f-status',unique('lead_status'));
+  fill('f-exp',unique('work_experience'));
+  fill('f-edu',unique('highest_education'));
+  fill('f-app',unique('application'));
+}
+
+function applyFilters(){
+  const fs=document.getElementById('f-status').value;
+  const fe=document.getElementById('f-exp').value;
+  const fed=document.getElementById('f-edu').value;
+  const fa=document.getElementById('f-app').value;
+  const fd1=document.getElementById('f-date-from').value;
+  const fd2=document.getElementById('f-date-to').value;
+  dbFiltered=dbAll.filter(r=>{
+    if(fs&&r.lead_status!==fs)return false;
+    if(fe&&r.work_experience!==fe)return false;
+    if(fed&&r.highest_education!==fed)return false;
+    if(fa&&r.application!==fa)return false;
+    if(fd1||fd2){
+      const d=new Date(r.created_at);
+      if(fd1&&d<new Date(fd1))return false;
+      if(fd2&&d>new Date(fd2+'T23:59:59'))return false;
+    }
+    return true;
+  });
+  renderTable();
+}
+
+function renderTable(){
+  const tbody=document.getElementById('db-tbody');
+  document.getElementById('db-loading').style.display='none';
+  document.getElementById('tbl-wrap').style.display='block';
+  if(!dbFiltered.length){
+    tbody.innerHTML='<tr><td colspan="10" style="text-align:center;padding:24px;color:var(--text3);font-family:var(--fm)">No rows match filters</td></tr>';
+    updateSelCount();return;
+  }
+  tbody.innerHTML=dbFiltered.map((r,i)=>{
+    const mob=String(r.mobile||'').replace(/^\+/,'').trim();
+    const cnt=sendCounts[mob]||0;
+    const capped=cnt>=SEND_CAP;
+    const d=r.created_at?new Date(r.created_at).toLocaleDateString('en-IN'):'';
+    const name=r.fullname||r.name||'—';
+    return `<tr>
+      <td><input type="checkbox" class="cb row-cb" data-idx="${i}" ${capped?'disabled title="Send cap reached ('+cnt+'/'+SEND_CAP+')"':''} onchange="updateSelCount()"/></td>
+      <td style="font-weight:500;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${name}">${name}</td>
+      <td style="font-family:var(--fm);font-size:11px">${mob}</td>
+      <td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px" title="${r.application||''}">${r.application||'—'}</td>
+      <td><span class="pill pill-q" style="max-width:130px;overflow:hidden;text-overflow:ellipsis;display:inline-block" title="${r.lead_status||''}">${r.lead_status||'—'}</span></td>
+      <td style="font-size:12px">${r.work_experience||'—'}</td>
+      <td style="font-size:12px">${r.highest_education||'—'}</td>
+      <td style="font-size:12px;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.bde_name||r.bde||'—'}</td>
+      <td style="font-family:var(--fm);font-size:11px">${d}</td>
+      <td>${capped?`<span class="pill pill-cap">${cnt}/${SEND_CAP} capped</span>`:`<span style="font-family:var(--fm);font-size:11px;color:${cnt>0?'var(--warning)':'var(--text3)'}">${cnt}/${SEND_CAP}</span>`}</td>
+    </tr>`;
+  }).join('');
+  updateSelCount();
+}
+
+function getSelected(){return[...document.querySelectorAll('.row-cb:checked')].map(cb=>dbFiltered[+cb.dataset.idx]);}
+function selectAll(){document.querySelectorAll('.row-cb:not(:disabled)').forEach(cb=>cb.checked=true);updateSelCount();}
+function deselectAll(){document.querySelectorAll('.row-cb').forEach(cb=>cb.checked=false);updateSelCount();}
+function toggleAll(m){document.querySelectorAll('.row-cb:not(:disabled)').forEach(cb=>cb.checked=m.checked);updateSelCount();}
+function updateSelCount(){document.getElementById('sel-count').textContent=document.querySelectorAll('.row-cb:checked').length+' selected';}
+
+/* STEPS */
+function addStep(data){
+  const s=data||{id:Date.now(),delay:0,delayUnit:'hours',templateid:'ghc_mkt01',mediaid:'1440105454122506',condition:'always'};
+  if(!data)steps.push(s);
+  renderSteps();saveState();
+}
+
+function renderSteps(){
+  const c=document.getElementById('steps-container');
+  c.innerHTML='';
+  steps.forEach((s,i)=>{
+    if(i>0){
+      const conn=document.createElement('div');
+      conn.className='connector';
+      conn.textContent=`↓ wait ${steps[i-1].delay} ${steps[i-1].delayUnit}`;
       c.appendChild(conn);
     }
-    const div = document.createElement('div');
-    div.className = 'step-card';
-    div.innerHTML = `
-      <div class="step-header">
-        <span class="step-badge">STEP ${i+1}</span>
-        <button class="step-del" onclick="removeStep(${i})" title="Remove step">×</button>
-      </div>
+    const div=document.createElement('div');
+    div.className='step-card';
+    div.innerHTML=`
+      <div class="step-hdr"><span class="step-badge">STEP ${i+1}</span><button class="step-del" onclick="removeStep(${i})">×</button></div>
       <div class="row">
-        <div class="col-sm">
-          <label>Delay</label>
-          <input type="number" min="0" value="${s.delay}" onchange="steps[${i}].delay=+this.value;renderSteps()"/>
-        </div>
-        <div class="col-sm">
-          <label>Unit</label>
-          <select onchange="steps[${i}].delayUnit=this.value;renderSteps()">
-            <option ${s.delayUnit==='minutes'?'selected':''}>minutes</option>
-            <option ${s.delayUnit==='hours'?'selected':''}>hours</option>
-            <option ${s.delayUnit==='days'?'selected':''}>days</option>
-          </select>
-        </div>
-        <div class="col">
-          <label>Template name (SmartPing)</label>
-          <input type="text" value="${s.template}" onchange="steps[${i}].template=this.value" placeholder="jobupdate"/>
-        </div>
+        <div class="col-sm"><label>Delay</label><input type="number" min="0" value="${s.delay}" onchange="steps[${i}].delay=+this.value;renderSteps();saveState()"/></div>
+        <div class="col-xs"><label>Unit</label><select onchange="steps[${i}].delayUnit=this.value;renderSteps();saveState()">
+          <option ${s.delayUnit==='minutes'?'selected':''}>minutes</option>
+          <option ${s.delayUnit==='hours'?'selected':''}>hours</option>
+          <option ${s.delayUnit==='days'?'selected':''}>days</option>
+        </select></div>
+        <div class="col"><label>Template ID</label><input type="text" value="${s.templateid}" onchange="steps[${i}].templateid=this.value;saveState()" placeholder="ghc_mkt01"/></div>
+        <div class="col"><label>Media ID</label><input type="text" value="${s.mediaid}" onchange="steps[${i}].mediaid=this.value;saveState()" placeholder="1440105454122506"/></div>
+        <div class="col-xs"><label>Condition</label><select onchange="steps[${i}].condition=this.value;saveState()">
+          <option value="always" ${s.condition==='always'?'selected':''}>Always</option>
+          <option value="no_reply" ${s.condition==='no_reply'?'selected':''}>No reply</option>
+        </select></div>
       </div>
-      <div class="row" style="margin-top:10px">
-        <div class="col">
-          <label>{{1}} variable — use {name} for contact name</label>
-          <input type="text" value="${s.vars}" onchange="steps[${i}].vars=this.value" placeholder="{name} or Achu"/>
-        </div>
-        <div class="col">
-          <label>Send condition</label>
-          <select onchange="steps[${i}].condition=this.value">
-            <option value="always" ${s.condition==='always'?'selected':''}>Always send</option>
-            <option value="no_reply" ${s.condition==='no_reply'?'selected':''}>Only if no reply</option>
-          </select>
-        </div>
-      </div>
-      <div class="row" style="margin-top:10px">
-        <div class="col">
-          <label>Button URL param (optional — leave blank if no button in template)</label>
-          <input type="text" value="${s.buttonParam||''}" onchange="steps[${i}].buttonParam=this.value" placeholder="e.g. apply?ref=wa"/>
-        </div>
-      </div>`;
+      <div class="hint" style="margin-top:8px">Placeholders auto-filled: {{1}} = Name · {{2}} = BDE number · {{3}} = BDE name</div>`;
     c.appendChild(div);
   });
 }
 
-function removeStep(i) { steps.splice(i, 1); renderSteps(); saveState(); }
-function clearSteps() { steps = []; renderSteps(); saveState(); }
+function removeStep(i){steps.splice(i,1);renderSteps();saveState();}
 
-function saveCampaign() {
-  const name = document.getElementById('camp-name').value.trim();
-  if (!name) { alert('Enter a campaign name'); return; }
-  if (!steps.length) { alert('Add at least one step'); return; }
-  addLog(`Campaign "${name}" saved · ${steps.length} step(s)`, 'ok');
-  alert(`✓ Campaign "${name}" saved with ${steps.length} step(s).`);
-}
+/* REVIEW */
+function buildReview(){
+  const name=document.getElementById('camp-name').value;
+  document.getElementById('rev-cnt').textContent=contacts.length;
+  document.getElementById('review-summary').innerHTML=`
+    <div class="row" style="gap:20px;flex-wrap:wrap;margin-bottom:14px">
+      <div><div style="font-size:11px;color:var(--text3)">Campaign</div><div style="font-size:15px;font-weight:500;margin-top:3px">${name||'(unnamed)'}</div></div>
+      <div><div style="font-size:11px;color:var(--text3)">Contacts</div><div style="font-size:15px;font-weight:500;margin-top:3px">${contacts.length}</div></div>
+      <div><div style="font-size:11px;color:var(--text3)">Steps</div><div style="font-size:15px;font-weight:500;margin-top:3px">${steps.length}</div></div>
+      <div><div style="font-size:11px;color:var(--text3)">Total messages</div><div style="font-size:15px;font-weight:500;margin-top:3px">${contacts.length*steps.length}</div></div>
+      <div><div style="font-size:11px;color:var(--text3)">Send cap</div><div style="font-size:15px;font-weight:500;margin-top:3px;color:var(--warning)">${SEND_CAP}/number</div></div>
+    </div>
+    <div class="divider"></div>
+    ${steps.map((s,i)=>`<div style="font-size:12px;font-family:var(--fm);color:var(--text2);margin-bottom:5px">Step ${i+1}: <span style="color:var(--accent)">${s.templateid}</span> · media <span style="color:var(--text)">${s.mediaid}</span>${i>0?' · after '+s.delay+' '+s.delayUnit:' · immediate'}</div>`).join('')}`;
 
-/* ── CONTACTS ── */
-function addTestLead() {
-  const raw = document.getElementById('contacts-raw');
-  const existing = raw.value.trim();
-  raw.value = (existing ? existing + '\n' : '') + '+917094956963,Achu';
-  parseContacts();
-}
-
-function parseContacts() {
-  const raw = document.getElementById('contacts-raw').value.trim();
-  if (!raw) return;
-  contacts = [];
-  raw.split('\n').forEach(line => {
-    line = line.trim();
-    if (!line) return;
-    const parts = line.split(',');
-    const phone = parts[0].trim();
-    const name = (parts[1] || 'Lead').trim();
-    if (phone) contacts.push({ phone, name, status: 'queued', step: 0, sentSteps: [] });
-  });
-  renderContactPreview();
-  updateMetrics();
-  addLog(`Parsed ${contacts.length} contact(s)`, 'info');
-  saveState();
-}
-
-function clearContacts() {
-  contacts = [];
-  document.getElementById('contacts-raw').value = '';
-  document.getElementById('contacts-preview').style.display = 'none';
-  updateMetrics();
-  saveState();
-}
-
-function renderContactPreview() {
-  const list = document.getElementById('contacts-list');
-  const box = document.getElementById('contacts-preview');
-  document.getElementById('contact-count').textContent = contacts.length;
-  if (!contacts.length) { box.style.display = 'none'; return; }
-  box.style.display = 'block';
-  list.innerHTML = contacts.map(c => `
-    <div class="contact-row">
-      <div class="avatar">${c.name.slice(0,2).toUpperCase()}</div>
-      <div style="flex:1">
-        <div class="contact-name">${c.name}</div>
-        <div class="contact-phone">${c.phone}</div>
-      </div>
-      <span class="pill pill-queued">queued</span>
-    </div>`).join('');
-}
-
-/* ── MONITOR ── */
-function renderMonitor() {
-  const list = document.getElementById('monitor-list');
-  if (!contacts.length) {
-    list.innerHTML = '<div class="empty">Load contacts first, then launch.</div>';
-    updateMetrics(); return;
-  }
-  list.innerHTML = contacts.map((c, i) => {
-    const pct = steps.length ? Math.round(c.sentSteps.length / steps.length * 100) : 0;
-    return `
-      <div class="contact-row">
-        <div class="avatar">${c.name.slice(0,2).toUpperCase()}</div>
+  document.getElementById('review-contacts').innerHTML=
+    contacts.slice(0,8).map(c=>`
+      <div class="c-row">
+        <div class="avatar">${(c.name||'?').slice(0,2).toUpperCase()}</div>
         <div style="flex:1">
-          <div style="display:flex;align-items:center;gap:8px">
-            <span class="contact-name">${c.name}</span>
-            <span class="contact-phone">${c.phone}</span>
-          </div>
-          <div style="font-size:11px;color:var(--text3);margin-top:2px">Step ${c.sentSteps.length}/${steps.length} complete</div>
-          <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+          <div style="font-size:13px;font-weight:500">${c.name}</div>
+          <div style="font-size:11px;font-family:var(--fm);color:var(--text3)">${c.phone} · BDE: ${c.bde_number||'—'}</div>
         </div>
-        <span class="pill pill-${c.status}">${c.status}</span>
-      </div>`;
+        <span class="pill ${c.skipReason?'pill-cap':'pill-q'}">${c.skipReason?'capped':c.status}</span>
+      </div>`).join('')+
+    (contacts.length>8?`<div style="font-size:12px;color:var(--text3);padding:8px 0;text-align:center">…and ${contacts.length-8} more</div>`:'');
+}
+
+/* PREFLIGHT */
+async function runPreflight(){
+  const el=document.getElementById('preflight-status');
+  el.innerHTML='<span style="color:var(--text2);font-family:var(--fm);font-size:12px">Checking send counts from Google Sheet…</span>';
+  let capped=0,ok=0,errors=0;
+  for(const c of contacts){
+    try{
+      const res=await fetch(`${GAS_URL}?tab=WhatsApp+Logs&mobile=${encodeURIComponent(c.phone)}`);
+      const d=await res.json();
+      const cnt=d.count||0;
+      sendCounts[c.phone]=cnt;
+      if(cnt>=SEND_CAP){c.skipReason=`cap (${cnt}/${SEND_CAP})`;capped++;}
+      else{c.skipReason='';ok++;}
+    }catch(e){errors++;}
+  }
+  // refresh table counts
+  renderTable();
+  saveState();
+  el.innerHTML=`
+    <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13px;margin-bottom:8px">
+      <span style="color:var(--success)">✓ ${ok} eligible to send</span>
+      <span style="color:var(--danger)">⊘ ${capped} capped (≥${SEND_CAP} msgs sent)</span>
+      ${errors?`<span style="color:var(--warning)">⚠ ${errors} check errors</span>`:''}
+    </div>
+    <div class="hint">Capped contacts will be auto-skipped. Eligible contacts proceed through all steps.</div>`;
+  addLog(`Preflight: ${ok} eligible · ${capped} capped · ${errors} errors`,'info');
+  buildReview();
+}
+
+/* LAUNCH */
+async function launchCampaign(){
+  if(!contacts.length){alert('No contacts selected. Go back to Audience.');return;}
+  if(!steps.length){alert('No steps configured. Go back to Sequence.');return;}
+  if(campaignRunning){alert('Campaign already running.');return;}
+  campaignRunning=true;
+  goStep(4);
+  const campName=document.getElementById('camp-name').value||'Campaign';
+  addLog(`▶ "${campName}" launched · ${contacts.length} contacts · ${steps.length} steps`,'ok');
+
+  for(let ci=0;ci<contacts.length;ci++){
+    if(!campaignRunning)break;
+    const c=contacts[ci];
+
+    // Fetch live count if not cached
+    if(sendCounts[c.phone]===undefined){
+      try{
+        const res=await fetch(`${GAS_URL}?tab=WhatsApp+Logs&mobile=${encodeURIComponent(c.phone)}`);
+        const d=await res.json();
+        sendCounts[c.phone]=d.count||0;
+      }catch(e){sendCounts[c.phone]=0;}
+    }
+
+    if((sendCounts[c.phone]||0)>=SEND_CAP){
+      c.status='skipped';c.skipReason=`cap (${sendCounts[c.phone]}/${SEND_CAP})`;
+      addLog(`${c.name} (${c.phone}): skipped — cap reached (${sendCounts[c.phone]}/${SEND_CAP})`,'skip');
+      renderMonitor();saveState();continue;
+    }
+
+    c.status='pending';renderMonitor();
+
+    for(let si=0;si<steps.length;si++){
+      if(!campaignRunning)break;
+      const step=steps[si];
+
+      // Re-check cap before each step
+      if((sendCounts[c.phone]||0)>=SEND_CAP){
+        addLog(`${c.name}: step ${si+1} skipped — cap hit mid-drip (${sendCounts[c.phone]}/${SEND_CAP})`,'skip');
+        c.skipReason=`cap at step ${si+1}`;break;
+      }
+
+      if(si>0&&step.delay>0){
+        const ms=step.delay*(step.delayUnit==='days'?86400000:step.delayUnit==='hours'?3600000:60000);
+        addLog(`${c.name}: waiting ${step.delay} ${step.delayUnit} before step ${si+1}…`,'warn');
+        await delay(Math.min(ms,5000));
+      }
+
+      addLog(`${c.name} (${c.phone}): step ${si+1} · template=${step.templateid}`,'info');
+
+      const payload={
+        user:API_USER,pass:API_PASS,
+        whatsapptosend:[{
+          from:API_FROM,to:c.phone,
+          templateid:step.templateid,mediaid:step.mediaid,
+          smsgid:c.phone+'_s'+si+'_'+Date.now(),
+          placeholders:[{"1":c.name,"2":c.bde_number,"3":c.bde_name}]
+        }]
+      };
+
+      let ok=false,respText='';
+      try{
+        const res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+        respText=await res.text();
+        ok=res.ok||res.status===200;
+      }catch(e){respText=e.message;}
+
+      if(ok)sendCounts[c.phone]=(sendCounts[c.phone]||0)+1;
+      const newCnt=sendCounts[c.phone]||0;
+
+      // Log to Google Sheet
+      try{
+        await fetch(GAS_URL,{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({
+            mobile:c.phone,name:c.name,templateid:step.templateid,
+            status:ok?'success':'failed',
+            response:respText.slice(0,300),
+            campaign:campName,step:'Step '+(si+1),
+            sendCount:newCnt+'/'+SEND_CAP
+          })
+        });
+      }catch(e){}
+
+      if(ok){
+        c.sentSteps.push(si);
+        addLog(`${c.name}: step ${si+1} ✓ sent · total=${newCnt}/${SEND_CAP}`,'ok');
+      }else{
+        addLog(`${c.name}: step ${si+1} ✗ failed — ${respText.slice(0,100)}`,'err');
+        c.status='failed';break;
+      }
+      renderMonitor();saveState();
+      await delay(400);
+    }
+
+    if(c.status==='pending')c.status=c.sentSteps.length===steps.length?'sent':'failed';
+    renderMonitor();saveState();
+  }
+
+  campaignRunning=false;
+  addLog('■ Drip complete.','ok');
+  saveState();
+}
+
+function stopCampaign(){
+  campaignRunning=false;
+  contacts.forEach(c=>{if(c.status==='pending')c.status='queued';});
+  renderMonitor();saveState();
+  addLog('■ Stopped by user.','err');
+}
+
+/* MONITOR */
+function renderMonitor(){
+  const list=document.getElementById('monitor-list');
+  if(!contacts.length){list.innerHTML='<div class="empty">No contacts loaded.</div>';updateMetrics();return;}
+  list.innerHTML=contacts.map(c=>{
+    const pct=steps.length?Math.round(c.sentSteps.length/steps.length*100):0;
+    const sc={sent:'pill-s',failed:'pill-f',skipped:'pill-sk',pending:'pill-p',queued:'pill-q'}[c.status]||'pill-q';
+    const cnt=sendCounts[c.phone]||0;
+    return`<div class="c-row">
+      <div class="avatar">${(c.name||'?').slice(0,2).toUpperCase()}</div>
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span style="font-size:13px;font-weight:500">${c.name}</span>
+          <span style="font-size:11px;font-family:var(--fm);color:var(--text3)">${c.phone}</span>
+          ${c.skipReason?`<span style="font-size:10px;color:var(--info);font-family:var(--fm)">${c.skipReason}</span>`:''}
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin-top:2px">Step ${c.sentSteps.length}/${steps.length} complete · lifetime msgs: ${cnt}/${SEND_CAP}</div>
+        <div class="pbar"><div class="pfill" style="width:${pct}%"></div></div>
+      </div>
+      <span class="pill ${sc}">${c.status}</span>
+    </div>`;
   }).join('');
   updateMetrics();
 }
 
-function updateMetrics() {
-  document.getElementById('m-total').textContent = contacts.length;
-  document.getElementById('m-sent').textContent = contacts.filter(c => c.status === 'sent').length;
-  document.getElementById('m-pending').textContent = contacts.filter(c => c.status === 'queued' || c.status === 'pending').length;
-  document.getElementById('m-failed').textContent = contacts.filter(c => c.status === 'failed').length;
+function updateMetrics(){
+  document.getElementById('m-total').textContent=contacts.length;
+  document.getElementById('m-sent').textContent=contacts.filter(c=>c.status==='sent').length;
+  document.getElementById('m-pending').textContent=contacts.filter(c=>c.status==='queued'||c.status==='pending').length;
+  document.getElementById('m-failed').textContent=contacts.filter(c=>c.status==='failed').length;
+  document.getElementById('m-skipped').textContent=contacts.filter(c=>c.status==='skipped').length;
 }
 
-/* ── API ── */
-async function sendWA(phone, templateName, name, buttonParam) {
-  // Strip +91 or + prefix — SmartPing expects raw number
-  const dest = phone.replace(/^\+91|^\+/, '').trim();
-
-  const payload = {
-    apiKey: API_KEY,
-    campaignName: templateName,
-    destination: dest,
-    userName: "Terratern",
-    templateParams: [`$FirstName`],
-    source: "drip-dashboard",
-    media: {},
-    buttons: buttonParam ? [
-      {
-        type: "button",
-        sub_type: "URL",
-        index: 0,
-        parameters: [{ type: "text", text: buttonParam }]
-      }
-    ] : [],
-    carouselCards: [],
-    location: {},
-    attributes: {},
-    paramsFallbackValue: {
-      FirstName: name || "user"
-    }
-  };
-  const res = await fetch(API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  });
-  const data = await res.json();
-  return { ok: res.ok, status: res.status, data };
+/* LOG */
+function addLog(msg,type='info'){
+  const now=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+  logs.unshift({time:now,msg,type});
+  if(logs.length>500)logs.pop();
+  renderLog();saveState();
+}
+function renderLog(){
+  const lc=document.getElementById('log-container');
+  if(!logs.length){lc.innerHTML='<div class="empty">No activity yet.</div>';return;}
+  lc.innerHTML=logs.map(l=>`<div class="log-row"><span class="log-time">${l.time}</span><span class="log-${l.type}">${l.msg}</span></div>`).join('');
+}
+function clearLog(){logs=[];renderLog();saveState();}
+function exportLog(){
+  const rows=[['Time','Message','Type'],...logs.map(l=>[l.time,l.msg,l.type])];
+  const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download='wa-drip-log-'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
 }
 
-/* ── LAUNCH ── */
-async function launchCampaign() {
-  if (!contacts.length) { alert('Add contacts first'); return; }
-  if (!steps.length) { alert('Build a drip sequence first'); return; }
-  if (campaignRunning) { alert('Campaign already running'); return; }
-  campaignRunning = true;
-  switchTab('monitor');
+function delay(ms){return new Promise(r=>setTimeout(r,ms));}
 
-  const campName = document.getElementById('camp-name').value.trim() || 'Unnamed Campaign';
-  addLog(`▶ "${campName}" launched · ${contacts.length} contacts · ${steps.length} steps`, 'ok');
-
-  for (let ci = 0; ci < contacts.length; ci++) {
-    if (!campaignRunning) break;
-    const c = contacts[ci];
-    c.status = 'pending';
-    renderMonitor();
-
-    for (let si = 0; si < steps.length; si++) {
-      if (!campaignRunning) break;
-      const step = steps[si];
-
-      if (si > 0 && step.delay > 0) {
-        const delaySec = step.delay * (step.delayUnit === 'days' ? 86400 : step.delayUnit === 'hours' ? 3600 : 60);
-        addLog(`${c.name}: ⏳ waiting ${step.delay} ${step.delayUnit} before step ${si+1}`, 'warn');
-        await delay(Math.min(delaySec * 1000, 3000));
-      }
-
-      const varVal = step.vars.replace('{name}', c.name);
-      addLog(`${c.name} · step ${si+1} · sending "${step.template}" · FirstName="${varVal}"${step.buttonParam?` · btn="${step.buttonParam}"`:''} `, 'info');
-
-      try {
-        const { ok, status, data } = await sendWA(c.phone, step.template, varVal, step.buttonParam||'');
-        if (ok || status === 200) {
-          c.sentSteps.push(si);
-          c.step = si + 1;
-          addLog(`${c.name} · step ${si+1} · ✓ sent OK`, 'ok');
-        } else {
-          addLog(`${c.name} · step ${si+1} · ✗ failed — ${JSON.stringify(data)}`, 'err');
-          c.status = 'failed';
-          break;
-        }
-      } catch (e) {
-        addLog(`${c.name} · step ${si+1} · ✗ API error — ${e.message}`, 'err');
-        c.status = 'failed';
-        break;
-      }
-      renderMonitor();
-      saveState();
-      await delay(600);
-    }
-
-    if (c.status !== 'failed') c.status = 'sent';
-    renderMonitor();
-    saveState();
+/* INIT */
+(function init(){
+  const saved=loadSaved();
+  if(saved){
+    steps=saved.steps||[];
+    contacts=(saved.contacts||[]).map(c=>({...c,status:c.status==='pending'?'queued':c.status}));
+    logs=saved.logs||[];
+    sendCounts=saved.sendCounts||{};
+    if(steps.length)renderSteps();
+    else addStep({id:1,delay:0,delayUnit:'hours',templateid:'ghc_mkt01',mediaid:'1440105454122506',condition:'always'});
+    if(contacts.length)renderMonitor();
+    renderLog();
+    if(saved.campName)document.getElementById('camp-name').value=saved.campName;
+    if(saved.triggerIdx!=null)document.getElementById('trigger').selectedIndex=saved.triggerIdx;
+  }else{
+    addStep({id:1,delay:0,delayUnit:'hours',templateid:'ghc_mkt01',mediaid:'1440105454122506',condition:'always'});
   }
-
-  campaignRunning = false;
-  addLog('■ Drip complete.', 'ok');
-}
-
-function stopCampaign() {
-  campaignRunning = false;
-  contacts.forEach(c => { if (c.status === 'pending') c.status = 'queued'; });
-  renderMonitor();
-  saveState();
-  addLog('■ Campaign stopped by user.', 'err');
-}
-
-/* ── LOG ── */
-function addLog(msg, type = 'info') {
-  const now = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
-  logs.unshift({ time: now, msg, type });
-  if (logs.length > 200) logs.pop();
-  const lc = document.getElementById('log-container');
-  lc.innerHTML = logs.map(l => `
-    <div class="log-row">
-      <span class="log-time">${l.time}</span>
-      <span class="log-${l.type}">${l.msg}</span>
-    </div>`).join('');
-  saveState();
-}
-
-function clearLog() {
-  logs = [];
-  document.getElementById('log-container').innerHTML = '<div class="empty">No activity yet.</div>';
-  saveState();
-}
-
-function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-/* ── INIT ── */
-(function restoreOrDefault() {
-  const saved = loadState();
-  if (saved) {
-    steps = saved.steps || [];
-    contacts = (saved.contacts || []).map(c => ({
-      ...c,
-      status: (c.status === 'pending') ? 'queued' : c.status
-    }));
-    logs = saved.logs || [];
-
-    // restore steps UI
-    if (steps.length > 0) {
-      renderSteps();
-    } else {
-      addStep({ id: 1, delay: 0, delayUnit: 'hours', template: 'jobupdate', vars: '{name}', condition: 'always', buttonParam: '' });
-    }
-
-    // restore contacts
-    if (contacts.length > 0) renderContactPreview();
-    updateMetrics();
-
-    // restore logs
-    if (logs.length > 0) {
-      const lc = document.getElementById('log-container');
-      lc.innerHTML = logs.map(l => `
-        <div class="log-row">
-          <span class="log-time">${l.time}</span>
-          <span class="log-${l.type}">${l.msg}</span>
-        </div>`).join('');
-    }
-
-    // restore campaign name and trigger
-    if (saved.campName) document.getElementById('camp-name').value = saved.campName;
-    if (saved.trigger != null) document.getElementById('trigger').selectedIndex = saved.trigger;
-
-    // restore contacts textarea
-    if (contacts.length > 0) {
-      document.getElementById('contacts-raw').value = contacts.map(c => `${c.phone},${c.name}`).join('\n');
-    }
-
-  } else {
-    addStep({ id: 1, delay: 0, delayUnit: 'hours', template: 'jobupdate', vars: '{name}', condition: 'always', buttonParam: '' });
-  }
+  document.getElementById('camp-name').addEventListener('input',saveState);
+  document.getElementById('trigger').addEventListener('change',saveState);
+  loadDB();
 })();
-
-// Save camp name on input
-document.getElementById('camp-name').addEventListener('input', saveState);
-document.getElementById('trigger').addEventListener('change', saveState);
 </script>
 </body>
 </html>
