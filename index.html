@@ -6,13 +6,24 @@
 <title>WA Drip Engine · TerraTern</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
-:root{--bg:#0a0a0a;--bg2:#111111;--bg3:#181818;--bg4:#1e1e1e;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);--accent:#c8f135;--accent2:#a8d41e;--text:#f0f0ee;--text2:#888880;--text3:#4a4a46;--success:#4ade80;--danger:#f87171;--warning:#fbbf24;--info:#60a5fa;--fh:'Syne',sans-serif;--fb:'Instrument Sans',sans-serif;--fm:'DM Mono',monospace}
+:root{
+  --bg:#0a0a0a;--bg2:#111111;--bg3:#181818;--bg4:#1e1e1e;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --accent:#c8f135;--accent2:#a8d41e;
+  --text:#f0f0ee;--text2:#888880;--text3:#4a4a46;
+  --success:#4ade80;--danger:#f87171;--warning:#fbbf24;--info:#60a5fa;
+  --fh:'Syne',sans-serif;--fb:'Instrument Sans',sans-serif;--fm:'DM Mono',monospace;
+}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{font-size:15px}
 body{background:var(--bg);color:var(--text);font-family:var(--fb);min-height:100vh;-webkit-font-smoothing:antialiased}
+
+/* LAYOUT */
 .shell{display:flex;min-height:100vh}
-.sidebar{width:220px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:24px 0;position:sticky;top:0;height:100vh;overflow:hidden}
+.sidebar{width:220px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:24px 0;position:sticky;top:0;height:100vh}
 .main{flex:1;padding:32px 36px;overflow-y:auto}
+
+/* SIDEBAR */
 .brand{padding:0 20px 20px;border-bottom:1px solid var(--border);margin-bottom:16px}
 .brand-name{font-family:var(--fh);font-size:16px;font-weight:700;letter-spacing:-.02em;color:var(--accent)}
 .brand-sub{font-size:11px;color:var(--text3);margin-top:2px;font-family:var(--fm)}
@@ -25,6 +36,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--fb);min-height:100
 .conn-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(74,222,128,.1);color:var(--success);font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid rgba(74,222,128,.2);font-family:var(--fm)}
 .dot{width:6px;height:6px;border-radius:50%;background:var(--success);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* WIZARD */
 .wizard{display:flex;align-items:center;margin-bottom:28px}
 .wz-step{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text3);font-family:var(--fm);white-space:nowrap}
 .wz-num{width:24px;height:24px;border-radius:50%;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .2s;flex-shrink:0}
@@ -33,23 +46,33 @@ body{background:var(--bg);color:var(--text);font-family:var(--fb);min-height:100
 .wz-step.active{color:var(--text)}
 .wz-step.done{color:var(--text2)}
 .wz-line{flex:1;height:1px;background:var(--border);margin:0 8px}
+
+/* PANELS */
 .panel{display:none;animation:fadeIn .2s ease}
 .panel.active{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
-.ph{margin-bottom:22px;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px}
+
+/* PAGE HEADER */
+.ph{margin-bottom:22px;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px}
 .ph-title{font-family:var(--fh);font-size:24px;font-weight:700;letter-spacing:-.03em}
 .ph-sub{font-size:13px;color:var(--text2);margin-top:3px}
+
+/* CARDS */
 .card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:14px}
 .card-title{font-family:var(--fh);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:14px}
+
+/* FORMS */
 label{font-size:12px;color:var(--text2);display:block;margin-bottom:5px}
 input,select,textarea{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:8px 11px;font-size:13px;font-family:var(--fb);color:var(--text);outline:none;transition:border-color .15s}
 input:focus,select:focus,textarea:focus{border-color:var(--accent)}
 select option{background:var(--bg3)}
-textarea{resize:vertical;min-height:70px;font-family:var(--fm);font-size:12px}
+textarea{resize:vertical;font-family:var(--fm);font-size:12px}
 .row{display:flex;gap:12px;flex-wrap:wrap}
 .col{flex:1;min-width:130px}
 .col-sm{flex:0 0 85px}
 .col-xs{flex:0 0 110px}
+
+/* BUTTONS */
 .btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-family:var(--fb);padding:8px 16px;border-radius:8px;border:1px solid var(--border2);background:transparent;color:var(--text);cursor:pointer;transition:all .15s;white-space:nowrap}
 .btn:hover{background:var(--bg3);border-color:rgba(255,255,255,.2)}
 .btn-accent{background:var(--accent);color:#0a0a0a;border-color:var(--accent);font-weight:500}
@@ -59,16 +82,26 @@ textarea{resize:vertical;min-height:70px;font-family:var(--fm);font-size:12px}
 .btn-sm{font-size:12px;padding:5px 12px}
 .btn-ghost{border-color:transparent;color:var(--text2)}
 .btn-ghost:hover{color:var(--text);background:var(--bg3);border-color:var(--border2)}
-.filter-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:14px}
-.tbl-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--border)}
+
+/* UPLOAD ZONE */
+.upload-zone{border:1.5px dashed var(--border2);border-radius:12px;padding:40px 20px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;margin-bottom:14px}
+.upload-zone:hover,.upload-zone.dragover{border-color:var(--accent);background:rgba(200,241,53,.03)}
+
+/* FILTERS */
+.filter-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px;margin-bottom:14px}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:12px}
 thead tr{background:var(--bg3)}
 thead th{padding:9px 12px;text-align:left;font-weight:500;color:var(--text2);font-size:11px;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid var(--border)}
 tbody tr{border-bottom:1px solid var(--border);transition:background .1s}
 tbody tr:last-child{border-bottom:none}
-tbody tr:hover{background:var(--bg3)}
+tbody tr:hover{background:rgba(255,255,255,.02)}
 tbody td{padding:8px 12px;color:var(--text);vertical-align:middle}
 .cb{width:14px;height:14px;accent-color:var(--accent);cursor:pointer}
+
+/* PILLS */
 .pill{display:inline-flex;align-items:center;font-size:10px;font-family:var(--fm);padding:2px 8px;border-radius:20px;white-space:nowrap}
 .pill-q{background:rgba(136,136,128,.15);color:var(--text2)}
 .pill-p{background:rgba(251,191,36,.12);color:var(--warning)}
@@ -76,37 +109,116 @@ tbody td{padding:8px 12px;color:var(--text);vertical-align:middle}
 .pill-f{background:rgba(248,113,113,.12);color:var(--danger)}
 .pill-sk{background:rgba(96,165,250,.1);color:var(--info)}
 .pill-cap{background:rgba(248,113,113,.2);color:var(--danger);border:1px solid rgba(248,113,113,.3)}
+
+/* STEP CARDS */
 .step-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:4px}
 .step-card:hover{border-color:var(--border2)}
 .step-hdr{display:flex;align-items:center;gap:8px;margin-bottom:12px}
 .step-badge{background:rgba(200,241,53,.12);color:var(--accent);font-size:10px;font-family:var(--fm);font-weight:500;padding:2px 8px;border-radius:20px;border:1px solid rgba(200,241,53,.2)}
-.step-del{margin-left:auto;background:none;border:none;cursor:pointer;color:var(--text3);font-size:18px;line-height:1;padding:2px 6px;border-radius:4px;transition:color .15s}
+.step-del{margin-left:auto;background:none;border:none;cursor:pointer;color:var(--text3);font-size:18px;line-height:1;padding:2px 6px;transition:color .15s}
 .step-del:hover{color:var(--danger)}
-.connector{display:flex;align-items:center;gap:8px;padding:4px 16px;color:var(--text3);font-size:11px;font-family:var(--fm)}
+.connector{display:flex;align-items:center;gap:8px;padding:3px 16px;color:var(--text3);font-size:11px;font-family:var(--fm)}
 .connector::before,.connector::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* METRICS */
 .metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px}
 .metric-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px}
 .metric-val{font-family:var(--fh);font-size:26px;font-weight:700;line-height:1}
 .metric-lbl{font-size:11px;color:var(--text3);margin-top:5px}
+
+/* CONTACT ROWS */
 .c-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
 .c-row:last-child{border-bottom:none}
 .avatar{width:30px;height:30px;border-radius:50%;background:rgba(200,241,53,.1);border:1px solid rgba(200,241,53,.2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--accent);flex-shrink:0;font-family:var(--fh)}
 .pbar{height:3px;background:var(--border);border-radius:2px;margin-top:4px;width:80px}
 .pfill{height:3px;background:var(--accent);border-radius:2px;transition:width .4s}
+
+/* LOG ROWS */
 .log-row{display:flex;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);font-family:var(--fm);font-size:12px;align-items:flex-start}
 .log-row:last-child{border-bottom:none}
 .log-time{color:var(--text3);flex-shrink:0;width:75px}
 .log-ok{color:var(--success)}.log-err{color:var(--danger)}.log-warn{color:var(--warning)}.log-info{color:var(--text2)}.log-skip{color:var(--info)}
+
+/* ACTION BAR */
 .act-bar{display:flex;gap:8px;justify-content:space-between;align-items:center;margin-top:8px;flex-wrap:wrap}
-.act-right{display:flex;gap:8px}
+.act-right{display:flex;gap:8px;align-items:center}
+
+/* MISC */
 .hint{font-size:11px;color:var(--text3);margin-top:4px;font-family:var(--fm)}
 .divider{height:1px;background:var(--border);margin:14px 0}
 .empty{font-size:13px;color:var(--text3);text-align:center;padding:24px 0;font-family:var(--fm)}
-@media(max-width:768px){.sidebar{width:56px}.brand-name,.brand-sub,.nav-label,.sidebar-footer{display:none}.nav-item{padding:12px;justify-content:center}.main{padding:16px}.metrics{grid-template-columns:repeat(2,1fr)}}
+
+/* ═══════════════════════════════════════
+   OVERLAY ACTION LOG
+═══════════════════════════════════════ */
+#action-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.75);
+  display:none;align-items:flex-end;justify-content:center;
+  z-index:9999;padding:24px;backdrop-filter:blur(4px);
+}
+#action-overlay.show{display:flex}
+#action-box{
+  width:100%;max-width:580px;
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:14px;overflow:hidden;
+  animation:slideUp .25s ease;
+}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+#action-header{
+  display:flex;align-items:center;gap:10px;
+  padding:14px 18px;border-bottom:1px solid var(--border);
+}
+#action-spinner{
+  width:16px;height:16px;border:2px solid var(--border2);
+  border-top-color:var(--accent);border-radius:50%;
+  animation:spin .7s linear infinite;flex-shrink:0;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+#action-spinner.done{border-color:var(--success);border-top-color:var(--success);animation:none;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='none' stroke='%234ade80' stroke-width='2' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 8l3.5 3.5L13 4'/%3E%3C/svg%3E") center/12px no-repeat}
+#action-spinner.error{border-color:var(--danger);border-top-color:var(--danger);animation:none;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='none' stroke='%23f87171' stroke-width='2' xmlns='http://www.w3.org/2000/svg'%3E%3Cline x1='4' y1='4' x2='12' y2='12'/%3E%3Cline x1='12' y1='4' x2='4' y2='12'/%3E%3C/svg%3E") center/12px no-repeat}
+#action-title{font-family:var(--fh);font-size:14px;font-weight:600;flex:1}
+#action-close{background:none;border:none;cursor:pointer;color:var(--text3);font-size:20px;line-height:1;padding:0 4px}
+#action-close:hover{color:var(--text)}
+#action-log-list{max-height:260px;overflow-y:auto;padding:10px 18px}
+.alog-row{display:flex;gap:10px;padding:5px 0;border-bottom:1px solid var(--border);font-family:var(--fm);font-size:12px;align-items:flex-start}
+.alog-row:last-child{border-bottom:none}
+.alog-time{color:var(--text3);flex-shrink:0;width:65px}
+.alog-ok{color:var(--success)}.alog-err{color:var(--danger)}.alog-warn{color:var(--warning)}.alog-info{color:var(--text2)}.alog-skip{color:var(--info)}
+#action-footer{padding:12px 18px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px}
+#action-status-text{font-size:12px;color:var(--text2);font-family:var(--fm)}
+#copy-error-btn{display:none;background:rgba(248,113,113,.1);color:var(--danger);border:1px solid rgba(248,113,113,.3);border-radius:6px;padding:5px 12px;font-size:12px;cursor:pointer;font-family:var(--fm)}
+#copy-error-btn:hover{background:rgba(248,113,113,.2)}
+
+@media(max-width:768px){
+  .sidebar{width:56px}
+  .brand-name,.brand-sub,.nav-label,.sidebar-footer{display:none}
+  .nav-item{padding:12px;justify-content:center}
+  .main{padding:16px}
+  .metrics{grid-template-columns:repeat(2,1fr)}
+}
 </style>
 </head>
 <body>
+
+<!-- ═══ OVERLAY ACTION LOG ═══ -->
+<div id="action-overlay">
+  <div id="action-box">
+    <div id="action-header">
+      <div id="action-spinner"></div>
+      <div id="action-title">Processing…</div>
+      <button id="action-close" onclick="closeOverlay()" title="Close">×</button>
+    </div>
+    <div id="action-log-list"></div>
+    <div id="action-footer">
+      <span id="action-status-text">Working…</span>
+      <button id="copy-error-btn" onclick="copyErrorLog()">Copy error log</button>
+    </div>
+  </div>
+</div>
+
 <div class="shell">
+
+<!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="brand">
     <div class="brand-name">WA Drip</div>
@@ -139,7 +251,10 @@ tbody td{padding:8px 12px;color:var(--text);vertical-align:middle}
   </div>
 </aside>
 
+<!-- MAIN -->
 <main class="main">
+
+<!-- WIZARD -->
 <div class="wizard">
   <div class="wz-step active" id="wz1"><div class="wz-num">1</div><span>Audience</span></div>
   <div class="wz-line"></div>
@@ -152,44 +267,51 @@ tbody td{padding:8px 12px;color:var(--text);vertical-align:middle}
   <div class="wz-step" id="wz5"><div class="wz-num">5</div><span>Log</span></div>
 </div>
 
-<!-- STEP 1: AUDIENCE -->
+<!-- ─── STEP 1: AUDIENCE ─── -->
 <div id="panel-1" class="panel active">
   <div class="ph">
-    <div><div class="ph-title">Audience</div><div class="ph-sub">Upload your DB · filter · select who to message</div></div>
-    <div class="act-right">
-      <button class="btn btn-sm btn-ghost" onclick="document.getElementById('csv-file').click()">
-        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 1v9M4 6l4-4 4 4"/><path d="M2 12h12v2H2z"/></svg>
-        Upload CSV / TSV
-      </button>
-      <button class="btn btn-sm btn-ghost" onclick="showPastePanel()">
-        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="2" width="10" height="12" rx="1"/><path d="M6 2V1h4v1"/><line x1="5" y1="6" x2="11" y2="6"/><line x1="5" y1="9" x2="9" y2="9"/></svg>
-        Paste JSON
-      </button>
-      <input type="file" id="csv-file" accept=".csv,.tsv,.txt" style="display:none" onchange="handleFileUpload(this)"/>
+    <div>
+      <div class="ph-title">Audience</div>
+      <div class="ph-sub">Load your DB · filter · select contacts</div>
+    </div>
+    <div class="act-right" id="db-actions" style="display:none">
+      <span id="db-badge" style="font-size:11px;color:var(--text3);font-family:var(--fm)"></span>
+      <button class="btn btn-sm btn-ghost" onclick="clearDB()">✕ Clear data</button>
     </div>
   </div>
 
   <!-- UPLOAD ZONE -->
-  <div id="upload-zone" class="card" style="border:1.5px dashed var(--border2);text-align:center;padding:36px 20px;cursor:pointer" onclick="document.getElementById('csv-file').click()" ondragover="event.preventDefault();this.style.borderColor='var(--accent)'" ondragleave="this.style.borderColor='var(--border2)'" ondrop="handleDrop(event)">
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.5" style="margin:0 auto 12px"><path d="M12 2v12M7 7l5-5 5 5"/><path d="M3 17h18v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3z"/></svg>
+  <div class="upload-zone" id="upload-zone"
+    onclick="document.getElementById('csv-file').click()"
+    ondragover="event.preventDefault();this.classList.add('dragover')"
+    ondragleave="this.classList.remove('dragover')"
+    ondrop="handleDrop(event)">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.3" style="margin:0 auto 14px;display:block"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
     <div style="font-size:14px;color:var(--text2);margin-bottom:6px">Drop CSV here or click to upload</div>
-    <div style="font-size:11px;color:var(--text3);font-family:var(--fm)">Export your Google Sheet DB tab as CSV · or paste JSON below</div>
-    <div style="font-size:11px;color:var(--text3);font-family:var(--fm);margin-top:4px">Expected columns: fullname, mobile, application, lead_status, work_experience, highest_education, bde_name, bde_number, created_at</div>
-  </div>
-
-  <!-- PASTE PANEL -->
-  <div id="paste-panel" class="card" style="display:none">
-    <div class="card-title">Paste JSON array from Google Sheet</div>
-    <textarea id="paste-json" style="min-height:120px;font-size:11px" placeholder='[{"fullname":"Achu","mobile":"917094956963","lead_status":"Applied","application":"Immigration Germany",...}]'></textarea>
-    <div style="display:flex;gap:8px;margin-top:10px">
-      <button class="btn btn-accent btn-sm" onclick="loadFromPaste()">Load data</button>
-      <button class="btn btn-sm btn-ghost" onclick="hidePastePanel()">Cancel</button>
+    <div style="font-size:11px;color:var(--text3);font-family:var(--fm);line-height:1.8">
+      Export DB tab → File → Download → CSV<br>
+      Columns needed: fullname, mobile, application, lead_status,<br>work_experience, highest_education, bde_name, bde_number, created_at
     </div>
-    <div class="hint">Paste the JSON array from your Apps Script URL: GAS_URL?tab=DB — open in browser, copy all, paste here</div>
+    <div style="margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <span style="font-size:12px;color:var(--text3)">or</span>
+      <button class="btn btn-sm" onclick="event.stopPropagation();togglePaste()">Paste JSON</button>
+    </div>
+    <input type="file" id="csv-file" accept=".csv,.tsv,.txt,.xls,.xlsx" style="display:none" onchange="handleFileInput(this)"/>
   </div>
 
-  <!-- FILTERS -->
-  <div class="card" id="filter-card" style="display:none">
+  <!-- PASTE JSON -->
+  <div id="paste-card" class="card" style="display:none">
+    <div class="card-title">Paste JSON from Apps Script</div>
+    <div class="hint" style="margin-bottom:10px">Open <span style="color:var(--accent)">GAS_URL?tab=DB</span> in browser → Ctrl+A → Ctrl+C → paste here</div>
+    <textarea id="paste-json" style="min-height:110px" placeholder='[{"fullname":"Achu","mobile":"917094956963",...}]  OR  {"success":true,"data":[...]}'></textarea>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="btn btn-accent btn-sm" onclick="loadFromPaste()">Load JSON</button>
+      <button class="btn btn-sm btn-ghost" onclick="togglePaste()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- FILTERS (hidden until data loaded) -->
+  <div id="filter-card" class="card" style="display:none">
     <div class="card-title">Filters</div>
     <div class="filter-grid">
       <div><label>Lead status</label><select id="f-status" onchange="applyFilters()"><option value="">All</option></select></div>
@@ -200,38 +322,39 @@ tbody td{padding:8px 12px;color:var(--text);vertical-align:middle}
       <div><label>Created to</label><input type="date" id="f-date-to" onchange="applyFilters()"/></div>
     </div>
     <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-      <button class="btn btn-sm" onclick="selectAll()">Select all visible</button>
+      <button class="btn btn-sm" onclick="selectAll()">Select all</button>
       <button class="btn btn-sm btn-ghost" onclick="deselectAll()">Deselect all</button>
-      <button class="btn btn-sm btn-ghost" onclick="clearDB()">✕ Clear data</button>
-      <span id="sel-count" style="font-size:12px;color:var(--text2)">0 selected</span>
-      <span id="db-status" style="font-size:11px;color:var(--text3);margin-left:auto;font-family:var(--fm)"></span>
+      <span id="sel-count" style="font-size:12px;color:var(--text2);margin-left:4px">0 selected</span>
+      <span id="filter-count" style="font-size:11px;color:var(--text3);margin-left:auto;font-family:var(--fm)"></span>
     </div>
   </div>
 
-  <!-- TABLE -->
-  <div class="card" id="tbl-card" style="padding:0;overflow:hidden;display:none">
-    <div class="tbl-wrap" id="tbl-wrap">
+  <!-- TABLE (hidden until data loaded) -->
+  <div id="tbl-card" class="card" style="display:none;padding:0;overflow:hidden">
+    <div class="tbl-wrap">
       <table>
-        <thead><tr>
-          <th><input type="checkbox" class="cb" id="cb-all" onchange="toggleAll(this)"/></th>
-          <th>Name</th><th>Mobile</th><th>Application</th><th>Lead Status</th>
-          <th>Work Exp</th><th>Education</th><th>BDE</th><th>Created</th><th>Msg Count</th>
-        </tr></thead>
+        <thead>
+          <tr>
+            <th><input type="checkbox" class="cb" id="cb-all" onchange="toggleAll(this)"/></th>
+            <th>Name</th><th>Mobile</th><th>Application</th><th>Lead Status</th>
+            <th>Work Exp</th><th>Education</th><th>BDE</th><th>Created</th><th>Msg Count</th>
+          </tr>
+        </thead>
         <tbody id="db-tbody"></tbody>
       </table>
     </div>
   </div>
 
   <div class="act-bar">
-    <span style="font-size:12px;color:var(--text3)" id="audience-hint">Upload or paste DB data to get started</span>
+    <span id="aud-hint" style="font-size:12px;color:var(--text3)">Upload or paste your DB to get started</span>
     <button class="btn btn-accent" onclick="nextStep(1)">Next: Sequence →</button>
   </div>
 </div>
 
-<!-- STEP 2: SEQUENCE -->
+<!-- ─── STEP 2: SEQUENCE ─── -->
 <div id="panel-2" class="panel">
   <div class="ph">
-    <div><div class="ph-title">Sequence</div><div class="ph-sub">Build your drip steps · template · timing</div></div>
+    <div><div class="ph-title">Sequence</div><div class="ph-sub">Configure drip steps · template · timing</div></div>
   </div>
   <div class="card">
     <div class="card-title">Campaign details</div>
@@ -258,7 +381,7 @@ tbody td{padding:8px 12px;color:var(--text);vertical-align:middle}
   </div>
 </div>
 
-<!-- STEP 3: REVIEW -->
+<!-- ─── STEP 3: REVIEW ─── -->
 <div id="panel-3" class="panel">
   <div class="ph">
     <div><div class="ph-title">Review & Launch</div><div class="ph-sub">Verify everything before sending</div></div>
@@ -269,13 +392,11 @@ tbody td{padding:8px 12px;color:var(--text);vertical-align:middle}
   </div>
   <div class="card">
     <div class="card-title">Pre-flight · send cap check</div>
-    <div id="preflight-status"><div class="empty" style="padding:12px 0">Click "Run checks" to verify send limits from Google Sheet logs</div></div>
-    <div style="margin-top:10px">
-      <button class="btn btn-sm" onclick="runPreflight()">Run checks</button>
-    </div>
+    <div id="preflight-status"><div class="empty" style="padding:10px 0">Run checks to verify send limits from Google Sheet logs</div></div>
+    <div style="margin-top:10px"><button class="btn btn-sm" onclick="runPreflight()">Run checks</button></div>
   </div>
   <div class="card">
-    <div class="card-title">Selected contacts (<span id="rev-cnt">0</span>)</div>
+    <div class="card-title">Contacts (<span id="rev-cnt">0</span>)</div>
     <div id="review-contacts"></div>
   </div>
   <div class="act-bar">
@@ -287,7 +408,7 @@ tbody td{padding:8px 12px;color:var(--text);vertical-align:middle}
   </div>
 </div>
 
-<!-- STEP 4: MONITOR -->
+<!-- ─── STEP 4: MONITOR ─── -->
 <div id="panel-4" class="panel">
   <div class="ph">
     <div><div class="ph-title">Monitor</div><div class="ph-sub">Live campaign progress</div></div>
@@ -304,12 +425,12 @@ tbody td{padding:8px 12px;color:var(--text);vertical-align:middle}
     <div class="metric-card"><div class="metric-val" id="m-skipped" style="color:var(--info)">0</div><div class="metric-lbl">Skipped</div></div>
   </div>
   <div class="card" style="padding:0;overflow:hidden">
-    <div style="padding:12px 16px;border-bottom:1px solid var(--border)"><div class="card-title" style="margin:0">Per-contact status</div></div>
-    <div id="monitor-list" style="padding:0 16px"><div class="empty">No campaign running yet.</div></div>
+    <div style="padding:12px 18px;border-bottom:1px solid var(--border)"><div class="card-title" style="margin:0">Per-contact status</div></div>
+    <div id="monitor-list" style="padding:0 18px"><div class="empty">No campaign running yet.</div></div>
   </div>
 </div>
 
-<!-- STEP 5: LOG -->
+<!-- ─── STEP 5: LOG ─── -->
 <div id="panel-5" class="panel">
   <div class="ph">
     <div><div class="ph-title">Activity Log</div><div class="ph-sub">Full record · never auto-cleared · persists on refresh</div></div>
@@ -320,507 +441,674 @@ tbody td{padding:8px 12px;color:var(--text);vertical-align:middle}
   </div>
   <div class="card"><div id="log-container"><div class="empty">No activity yet.</div></div></div>
 </div>
+
 </main>
 </div>
 
 <script>
-const GAS_URL='https://script.google.com/macros/s/AKfycbw_C69HyzJG8TH-d5OwsZjVkqQJirADCiCK7KJYBVB199H5QeNwzsn3mFT4OPMgk8-PQQ/exec';
-const API_URL='https://media.sendmsg.in/mediasend';
-const API_USER='terratern';
-const API_PASS='TtBFAKMDLkpJ';
-const API_FROM='918123378405';
-const SEND_CAP=5;
-const STORE_KEY='wd3_state';
+/* ═══ CONFIG ═══ */
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbw_C69HyzJG8TH-d5OwsZjVkqQJirADCiCK7KJYBVB199H5QeNwzsn3mFT4OPMgk8-PQQ/exec';
+const API_URL = 'https://media.sendmsg.in/mediasend';
+const API_USER = 'terratern';
+const API_PASS = 'TtBFAKMDLkpJ';
+const API_FROM = '918123378405';
+const SEND_CAP = 5;
+const STORE_KEY = 'wd4';
 
-let dbAll=[],dbFiltered=[],contacts=[],steps=[],logs=[],sendCounts={};
-let campaignRunning=false;
+/* ═══ STATE ═══ */
+let dbAll = [], dbFiltered = [], contacts = [], steps = [], logs = [], sendCounts = {};
+let campaignRunning = false;
+let overlayLogs = [], overlayHasError = false;
 
-/* PERSIST */
-function saveState(){
-  try{
-    localStorage.setItem(STORE_KEY,JSON.stringify({
-      steps,contacts,logs,sendCounts,
-      campName:document.getElementById('camp-name')?.value||'',
-      triggerIdx:document.getElementById('trigger')?.selectedIndex||0
-    }));
-  }catch(e){}
+/* ═══════════════════════════════════════
+   OVERLAY
+═══════════════════════════════════════ */
+function openOverlay(title) {
+  overlayLogs = [];
+  overlayHasError = false;
+  document.getElementById('action-title').textContent = title;
+  document.getElementById('action-spinner').className = '';
+  document.getElementById('action-status-text').textContent = 'Working…';
+  document.getElementById('copy-error-btn').style.display = 'none';
+  document.getElementById('action-log-list').innerHTML = '';
+  document.getElementById('action-overlay').classList.add('show');
 }
-function loadSaved(){
-  try{return JSON.parse(localStorage.getItem(STORE_KEY)||'null');}catch(e){return null;}
+
+function overlayLog(msg, type = 'info') {
+  const now = new Date().toLocaleTimeString('en-IN', {hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+  overlayLogs.push({time: now, msg, type});
+  if (type === 'err') overlayHasError = true;
+
+  const list = document.getElementById('action-log-list');
+  const row = document.createElement('div');
+  row.className = 'alog-row';
+  row.innerHTML = `<span class="alog-time">${now}</span><span class="alog-${type}">${msg}</span>`;
+  list.appendChild(row);
+  list.scrollTop = list.scrollHeight;
 }
 
-/* WIZARD */
-function goStep(n){
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
-  document.getElementById('panel-'+n).classList.add('active');
-  document.querySelectorAll('.nav-item')[n-1]?.classList.add('active');
-  for(let i=1;i<=5;i++){
-    const el=document.getElementById('wz'+i);
-    el.className='wz-step'+(i===n?' active':i<n?' done':'');
+function overlayDone(msg) {
+  document.getElementById('action-spinner').className = 'done';
+  document.getElementById('action-status-text').textContent = msg || 'Done';
+  if (overlayHasError) {
+    document.getElementById('copy-error-btn').style.display = 'inline-flex';
   }
-  if(n===3)buildReview();
-  if(n===4)renderMonitor();
-  if(n===5)renderLog();
+  // Auto close after 2.5s if no errors
+  if (!overlayHasError) {
+    setTimeout(() => closeOverlay(), 2500);
+  }
 }
 
-function nextStep(from){
-  if(from===1){
-    const sel=getSelected();
-    if(!sel.length){alert('Select at least one contact.');return;}
-    contacts=sel.map(r=>({
-      phone:String(r.mobile||'').replace(/^\+/,'').trim(),
-      name:r.fullname||r.name||'Lead',
-      bde_number:r.bde_number||r.bde||'',
-      bde_name:r.bde_name||r.bde||'',
-      status:'queued',sentSteps:[],skipReason:''
-    }));
-    saveState();
-  }
-  if(from===2){
-    if(!document.getElementById('camp-name').value.trim()){alert('Enter a campaign name.');return;}
-    if(!steps.length){alert('Add at least one step.');return;}
-    saveState();
-  }
-  goStep(from+1);
+function overlayError(msg) {
+  document.getElementById('action-spinner').className = 'error';
+  document.getElementById('action-status-text').textContent = msg || 'Error occurred';
+  document.getElementById('copy-error-btn').style.display = 'inline-flex';
 }
 
-/* DB LOAD — upload/paste based */
-function showPastePanel(){document.getElementById('paste-panel').style.display='block';}
-function hidePastePanel(){document.getElementById('paste-panel').style.display='none';}
+function closeOverlay() {
+  document.getElementById('action-overlay').classList.remove('show');
+}
 
-function normaliseRows(rows){
-  return rows.filter(r=>{
-    const keys=Object.keys(r).map(k=>k.toLowerCase());
-    return keys.some(k=>k.includes('mobile')||k.includes('phone'));
-  }).map(r=>{
-    const n={};
-    Object.keys(r).forEach(k=>n[k.toLowerCase().trim().replace(/\s+/g,'_')]=r[k]);
-    // alias common variants
-    if(!n.mobile&&n.phone)n.mobile=n.phone;
-    if(!n.fullname&&n.name)n.fullname=n.name;
-    if(!n.fullname&&n['full_name'])n.fullname=n['full_name'];
-    return n;
+function copyErrorLog() {
+  const text = overlayLogs.map(l => `[${l.time}] [${l.type.toUpperCase()}] ${l.msg}`).join('\n');
+  navigator.clipboard.writeText(text).then(() => {
+    document.getElementById('copy-error-btn').textContent = 'Copied!';
+    setTimeout(() => document.getElementById('copy-error-btn').textContent = 'Copy error log', 2000);
+  }).catch(() => {
+    prompt('Copy this log:', text);
   });
 }
 
-function ingestData(rows){
-  dbAll=normaliseRows(rows);
-  populateFilters();
-  applyFilters();
-  document.getElementById('upload-zone').style.display='none';
-  document.getElementById('filter-card').style.display='block';
-  document.getElementById('tbl-card').style.display='block';
-  document.getElementById('db-status').textContent=dbAll.length+' rows loaded';
-  document.getElementById('audience-hint').textContent=dbAll.length+' leads loaded · select contacts then proceed';
-  addLog('DB loaded: '+dbAll.length+' rows','info');
-  saveDBToStorage();
+/* ═══════════════════════════════════════
+   PERSIST
+═══════════════════════════════════════ */
+function saveState() {
+  try {
+    localStorage.setItem(STORE_KEY, JSON.stringify({
+      steps, contacts, logs, sendCounts,
+      campName: document.getElementById('camp-name')?.value || '',
+      triggerIdx: document.getElementById('trigger')?.selectedIndex || 0
+    }));
+  } catch(e) {}
 }
 
-function saveDBToStorage(){
-  try{localStorage.setItem(STORE_KEY+'_db',JSON.stringify(dbAll));}catch(e){}
+function loadSaved() {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch(e) { return null; }
 }
 
-function loadDBFromStorage(){
-  try{
-    const raw=localStorage.getItem(STORE_KEY+'_db');
-    if(!raw)return false;
-    dbAll=JSON.parse(raw);
-    if(!dbAll.length)return false;
+function saveDB() {
+  try { localStorage.setItem(STORE_KEY + '_db', JSON.stringify(dbAll)); } catch(e) {}
+}
+
+function restoreDB() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY + '_db');
+    if (!raw) return false;
+    const data = JSON.parse(raw);
+    if (!data || !data.length) return false;
+    dbAll = data;
     populateFilters();
     applyFilters();
-    document.getElementById('upload-zone').style.display='none';
-    document.getElementById('filter-card').style.display='block';
-    document.getElementById('tbl-card').style.display='block';
-    document.getElementById('db-status').textContent=dbAll.length+' rows (cached)';
-    document.getElementById('audience-hint').textContent=dbAll.length+' leads loaded · select contacts then proceed';
+    showDBUI();
     return true;
-  }catch(e){return false;}
+  } catch(e) { return false; }
 }
 
-function clearDB(){
-  if(!confirm('Clear loaded data?'))return;
-  dbAll=[];dbFiltered=[];
-  document.getElementById('upload-zone').style.display='block';
-  document.getElementById('filter-card').style.display='none';
-  document.getElementById('tbl-card').style.display='none';
-  document.getElementById('db-status').textContent='';
-  document.getElementById('audience-hint').textContent='Upload or paste DB data to get started';
-  try{localStorage.removeItem(STORE_KEY+'_db');}catch(e){}
-  addLog('DB cleared','warn');
+/* ═══════════════════════════════════════
+   WIZARD NAV
+═══════════════════════════════════════ */
+function goStep(n) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + n).classList.add('active');
+  document.querySelectorAll('.nav-item')[n - 1]?.classList.add('active');
+  for (let i = 1; i <= 5; i++) {
+    document.getElementById('wz' + i).className = 'wz-step' + (i === n ? ' active' : i < n ? ' done' : '');
+  }
+  if (n === 3) buildReview();
+  if (n === 4) renderMonitor();
+  if (n === 5) renderLog();
 }
 
-function loadFromPaste(){
-  const raw=document.getElementById('paste-json').value.trim();
-  if(!raw){alert('Paste JSON first');return;}
-  try{
-    let parsed=JSON.parse(raw);
-    // support {success:true, data:[...]} wrapper from GAS
-    if(parsed.data&&Array.isArray(parsed.data))parsed=parsed.data;
-    if(!Array.isArray(parsed))throw new Error('Expected JSON array');
-    ingestData(parsed);
-    hidePastePanel();
-    document.getElementById('paste-json').value='';
-  }catch(e){alert('Invalid JSON: '+e.message);}
+function nextStep(from) {
+  if (from === 1) {
+    const sel = getSelected();
+    if (!sel.length) { alert('Select at least one contact.'); return; }
+    contacts = sel.map(r => ({
+      phone: String(r.mobile || r.phone || '').replace(/^\+/, '').trim(),
+      name: r.fullname || r.full_name || r.name || 'Lead',
+      bde_number: r.bde_number || r.bde || '',
+      bde_name: r.bde_name || r.bde || '',
+      status: 'queued', sentSteps: [], skipReason: ''
+    }));
+    saveState();
+  }
+  if (from === 2) {
+    if (!document.getElementById('camp-name').value.trim()) { alert('Enter a campaign name.'); return; }
+    if (!steps.length) { alert('Add at least one step.'); return; }
+    saveState();
+  }
+  goStep(from + 1);
 }
 
-function handleFileUpload(input){
-  const file=input.files[0];
-  if(!file)return;
-  const reader=new FileReader();
-  reader.onload=e=>parseCSV(e.target.result,file.name);
+/* ═══════════════════════════════════════
+   DB — UPLOAD / PASTE
+═══════════════════════════════════════ */
+function togglePaste() {
+  const el = document.getElementById('paste-card');
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+function handleFileInput(input) {
+  const file = input.files[0];
+  if (!file) return;
+  openOverlay('Loading file: ' + file.name);
+  overlayLog('Reading file…', 'info');
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      parseFileContent(e.target.result, file.name);
+    } catch(err) {
+      overlayLog('Parse error: ' + err.message, 'err');
+      overlayError('Failed to parse file');
+    }
+  };
+  reader.onerror = () => {
+    overlayLog('FileReader error: could not read file', 'err');
+    overlayError('File read failed');
+  };
   reader.readAsText(file);
-  input.value='';
+  input.value = '';
 }
 
-function handleDrop(e){
+function handleDrop(e) {
   e.preventDefault();
-  document.getElementById('upload-zone').style.borderColor='var(--border2)';
-  const file=e.dataTransfer.files[0];
-  if(!file)return;
-  const reader=new FileReader();
-  reader.onload=ev=>parseCSV(ev.target.result,file.name);
+  document.getElementById('upload-zone').classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (!file) return;
+  openOverlay('Loading file: ' + file.name);
+  overlayLog('Reading dropped file…', 'info');
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try { parseFileContent(ev.target.result, file.name); }
+    catch(err) { overlayLog('Parse error: ' + err.message, 'err'); overlayError('Failed to parse'); }
+  };
   reader.readAsText(file);
 }
 
-function parseCSV(text,filename){
-  const isTSV=filename&&filename.endsWith('.tsv');
-  const sep=isTSV?'\t':detectSep(text);
-  const lines=text.trim().split(/\r?\n/);
-  if(lines.length<2){alert('File seems empty or has no data rows.');return;}
-  const headers=splitCSVLine(lines[0],sep);
-  const rows=lines.slice(1).map(line=>{
-    const vals=splitCSVLine(line,sep);
-    const obj={};
-    headers.forEach((h,i)=>obj[h.trim()]=vals[i]!==undefined?vals[i].trim():'');
+function parseFileContent(text, filename) {
+  overlayLog('Detecting format…', 'info');
+
+  // Try JSON first
+  const trimmed = text.trim();
+  if (trimmed.startsWith('[') || trimmed.startsWith('{')) {
+    overlayLog('Detected JSON format', 'info');
+    let parsed = JSON.parse(trimmed);
+    if (parsed.data && Array.isArray(parsed.data)) parsed = parsed.data;
+    if (!Array.isArray(parsed)) throw new Error('Expected JSON array or {success,data} object');
+    ingestData(parsed);
+    return;
+  }
+
+  // CSV/TSV
+  const isTSV = filename && filename.endsWith('.tsv');
+  const sep = isTSV ? '\t' : detectSep(text);
+  overlayLog('Detected ' + (sep === '\t' ? 'TSV' : 'CSV') + ' format', 'info');
+  const lines = text.trim().split(/\r?\n/).filter(l => l.trim());
+  if (lines.length < 2) throw new Error('File has no data rows');
+  overlayLog('Parsing ' + (lines.length - 1) + ' rows…', 'info');
+  const headers = splitLine(lines[0], sep);
+  overlayLog('Columns: ' + headers.join(', '), 'info');
+  const rows = lines.slice(1).map(line => {
+    const vals = splitLine(line, sep);
+    const obj = {};
+    headers.forEach((h, i) => obj[h.trim()] = (vals[i] || '').trim());
     return obj;
-  }).filter(r=>Object.values(r).some(v=>v!==''));
+  }).filter(r => Object.values(r).some(v => v !== ''));
   ingestData(rows);
 }
 
-function detectSep(text){
-  const first=text.split('\n')[0];
-  const tabs=(first.match(/\t/g)||[]).length;
-  const commas=(first.match(/,/g)||[]).length;
-  return tabs>commas?'\t':',';
-}
-
-function splitCSVLine(line,sep){
-  if(sep!==',')return line.split(sep);
-  const result=[];let cur='';let inQ=false;
-  for(let i=0;i<line.length;i++){
-    const ch=line[i];
-    if(ch==='"'){inQ=!inQ;}
-    else if(ch===','&&!inQ){result.push(cur);cur='';}
-    else cur+=ch;
+function loadFromPaste() {
+  const raw = document.getElementById('paste-json').value.trim();
+  if (!raw) { alert('Nothing pasted.'); return; }
+  openOverlay('Loading pasted JSON…');
+  overlayLog('Parsing JSON…', 'info');
+  try {
+    let parsed = JSON.parse(raw);
+    if (parsed.data && Array.isArray(parsed.data)) {
+      overlayLog('Detected GAS wrapper format — extracting data array', 'info');
+      parsed = parsed.data;
+    }
+    if (!Array.isArray(parsed)) throw new Error('Expected a JSON array');
+    ingestData(parsed);
+    document.getElementById('paste-json').value = '';
+    document.getElementById('paste-card').style.display = 'none';
+  } catch(err) {
+    overlayLog('JSON parse error: ' + err.message, 'err');
+    overlayError('Invalid JSON');
   }
-  result.push(cur);
-  return result.map(v=>v.replace(/^"|"$/g,''));
 }
 
-function loadDB(){
-  document.getElementById('csv-file').click();
+function ingestData(rows) {
+  overlayLog('Normalising keys…', 'info');
+  const normalised = rows.map(r => {
+    const n = {};
+    Object.keys(r).forEach(k => n[k.toLowerCase().trim().replace(/\s+/g, '_')] = r[k]);
+    // aliases
+    if (!n.mobile && n.phone) n.mobile = n.phone;
+    if (!n.fullname && n.name) n.fullname = n.name;
+    if (!n.fullname && n.full_name) n.fullname = n.full_name;
+    return n;
+  }).filter(r => {
+    const mob = String(r.mobile || r.phone || '');
+    return mob.replace(/\D/g, '').length >= 8;
+  });
+
+  if (!normalised.length) {
+    overlayLog('No valid rows found — check that "mobile" or "phone" column exists with valid numbers', 'err');
+    overlayError('No valid rows');
+    return;
+  }
+
+  overlayLog(normalised.length + ' valid rows loaded', 'ok');
+  overlayLog('Sample: ' + (normalised[0].fullname || normalised[0].name || '?') + ' · ' + (normalised[0].mobile || ''), 'info');
+  dbAll = normalised;
+  saveDB();
+  populateFilters();
+  applyFilters();
+  showDBUI();
+  addLog('DB loaded: ' + dbAll.length + ' rows', 'ok');
+  overlayDone(dbAll.length + ' contacts loaded successfully');
 }
 
-function populateFilters(){
-  const unique=key=>[...new Set(dbAll.map(r=>r[key]).filter(v=>v!==undefined&&v!==''))].sort();
-  const fill=(id,vals)=>{
-    const el=document.getElementById(id);
-    const cur=el.value;
-    el.innerHTML='<option value="">All</option>'+vals.map(v=>`<option value="${v}">${v}</option>`).join('');
-    if(cur)el.value=cur;
+function showDBUI() {
+  document.getElementById('upload-zone').style.display = 'none';
+  document.getElementById('filter-card').style.display = 'block';
+  document.getElementById('tbl-card').style.display = 'block';
+  document.getElementById('db-actions').style.display = 'flex';
+  document.getElementById('db-badge').textContent = dbAll.length + ' rows loaded';
+  document.getElementById('aud-hint').textContent = dbAll.length + ' leads · select contacts then proceed';
+}
+
+function clearDB() {
+  if (!confirm('Clear all loaded data?')) return;
+  dbAll = []; dbFiltered = [];
+  document.getElementById('upload-zone').style.display = 'block';
+  document.getElementById('filter-card').style.display = 'none';
+  document.getElementById('tbl-card').style.display = 'none';
+  document.getElementById('db-actions').style.display = 'none';
+  document.getElementById('aud-hint').textContent = 'Upload or paste your DB to get started';
+  try { localStorage.removeItem(STORE_KEY + '_db'); } catch(e) {}
+  addLog('DB cleared', 'warn');
+}
+
+function detectSep(text) {
+  const first = text.split('\n')[0];
+  return (first.match(/\t/g) || []).length > (first.match(/,/g) || []).length ? '\t' : ',';
+}
+
+function splitLine(line, sep) {
+  if (sep !== ',') return line.split(sep).map(v => v.trim());
+  const result = []; let cur = ''; let inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') { inQ = !inQ; }
+    else if (ch === ',' && !inQ) { result.push(cur.trim()); cur = ''; }
+    else cur += ch;
+  }
+  result.push(cur.trim());
+  return result.map(v => v.replace(/^"|"$/g, ''));
+}
+
+/* ═══════════════════════════════════════
+   FILTERS & TABLE
+═══════════════════════════════════════ */
+function populateFilters() {
+  const unique = key => [...new Set(dbAll.map(r => r[key]).filter(v => v !== undefined && v !== ''))].sort();
+  const fill = (id, vals) => {
+    const el = document.getElementById(id);
+    const cur = el.value;
+    el.innerHTML = '<option value="">All</option>' + vals.map(v => `<option value="${v}">${v}</option>`).join('');
+    if (cur) el.value = cur;
   };
-  fill('f-status',unique('lead_status'));
-  fill('f-exp',unique('work_experience'));
-  fill('f-edu',unique('highest_education'));
-  fill('f-app',unique('application'));
+  fill('f-status', unique('lead_status'));
+  fill('f-exp', unique('work_experience'));
+  fill('f-edu', unique('highest_education'));
+  fill('f-app', unique('application'));
 }
 
-function applyFilters(){
-  const fs=document.getElementById('f-status').value;
-  const fe=document.getElementById('f-exp').value;
-  const fed=document.getElementById('f-edu').value;
-  const fa=document.getElementById('f-app').value;
-  const fd1=document.getElementById('f-date-from').value;
-  const fd2=document.getElementById('f-date-to').value;
-  dbFiltered=dbAll.filter(r=>{
-    if(fs&&r.lead_status!==fs)return false;
-    if(fe&&r.work_experience!==fe)return false;
-    if(fed&&r.highest_education!==fed)return false;
-    if(fa&&r.application!==fa)return false;
-    if(fd1||fd2){
-      const d=new Date(r.created_at);
-      if(fd1&&d<new Date(fd1))return false;
-      if(fd2&&d>new Date(fd2+'T23:59:59'))return false;
+function applyFilters() {
+  const fs = document.getElementById('f-status').value;
+  const fe = document.getElementById('f-exp').value;
+  const fed = document.getElementById('f-edu').value;
+  const fa = document.getElementById('f-app').value;
+  const fd1 = document.getElementById('f-date-from').value;
+  const fd2 = document.getElementById('f-date-to').value;
+  dbFiltered = dbAll.filter(r => {
+    if (fs && r.lead_status !== fs) return false;
+    if (fe && r.work_experience !== fe) return false;
+    if (fed && r.highest_education !== fed) return false;
+    if (fa && r.application !== fa) return false;
+    if (fd1 || fd2) {
+      const d = new Date(r.created_at);
+      if (isNaN(d)) return true;
+      if (fd1 && d < new Date(fd1)) return false;
+      if (fd2 && d > new Date(fd2 + 'T23:59:59')) return false;
     }
     return true;
   });
+  document.getElementById('filter-count').textContent = dbFiltered.length + ' of ' + dbAll.length + ' shown';
   renderTable();
 }
 
-function renderTable(){
-  const tbody=document.getElementById('db-tbody');
-  document.getElementById('db-loading').style.display='none';
-  document.getElementById('tbl-wrap').style.display='block';
-  if(!dbFiltered.length){
-    tbody.innerHTML='<tr><td colspan="10" style="text-align:center;padding:24px;color:var(--text3);font-family:var(--fm)">No rows match filters</td></tr>';
-    updateSelCount();return;
+function renderTable() {
+  const tbody = document.getElementById('db-tbody');
+  if (!dbFiltered.length) {
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:20px;color:var(--text3);font-family:var(--fm)">No rows match filters</td></tr>';
+    updateSelCount(); return;
   }
-  tbody.innerHTML=dbFiltered.map((r,i)=>{
-    const mob=String(r.mobile||'').replace(/^\+/,'').trim();
-    const cnt=sendCounts[mob]||0;
-    const capped=cnt>=SEND_CAP;
-    const d=r.created_at?new Date(r.created_at).toLocaleDateString('en-IN'):'';
-    const name=r.fullname||r.name||'—';
+  tbody.innerHTML = dbFiltered.map((r, i) => {
+    const mob = String(r.mobile || r.phone || '').replace(/^\+/, '').trim();
+    const cnt = sendCounts[mob] || 0;
+    const capped = cnt >= SEND_CAP;
+    const d = r.created_at ? (() => { try { return new Date(r.created_at).toLocaleDateString('en-IN'); } catch(e) { return r.created_at; } })() : '';
+    const name = r.fullname || r.name || '—';
     return `<tr>
-      <td><input type="checkbox" class="cb row-cb" data-idx="${i}" ${capped?'disabled title="Send cap reached ('+cnt+'/'+SEND_CAP+')"':''} onchange="updateSelCount()"/></td>
+      <td><input type="checkbox" class="cb row-cb" data-idx="${i}" ${capped ? 'disabled title="Cap reached"' : ''} onchange="updateSelCount()"/></td>
       <td style="font-weight:500;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${name}">${name}</td>
       <td style="font-family:var(--fm);font-size:11px">${mob}</td>
-      <td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px" title="${r.application||''}">${r.application||'—'}</td>
-      <td><span class="pill pill-q" style="max-width:130px;overflow:hidden;text-overflow:ellipsis;display:inline-block" title="${r.lead_status||''}">${r.lead_status||'—'}</span></td>
-      <td style="font-size:12px">${r.work_experience||'—'}</td>
-      <td style="font-size:12px">${r.highest_education||'—'}</td>
-      <td style="font-size:12px;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.bde_name||r.bde||'—'}</td>
+      <td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px">${r.application || '—'}</td>
+      <td><span class="pill pill-q" style="max-width:130px;overflow:hidden;text-overflow:ellipsis">${r.lead_status || '—'}</span></td>
+      <td style="font-size:12px">${r.work_experience || '—'}</td>
+      <td style="font-size:12px">${r.highest_education || '—'}</td>
+      <td style="font-size:12px;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.bde_name || '—'}</td>
       <td style="font-family:var(--fm);font-size:11px">${d}</td>
-      <td>${capped?`<span class="pill pill-cap">${cnt}/${SEND_CAP} capped</span>`:`<span style="font-family:var(--fm);font-size:11px;color:${cnt>0?'var(--warning)':'var(--text3)'}">${cnt}/${SEND_CAP}</span>`}</td>
+      <td>${capped ? `<span class="pill pill-cap">${cnt}/${SEND_CAP}</span>` : `<span style="font-family:var(--fm);font-size:11px;color:${cnt > 0 ? 'var(--warning)' : 'var(--text3)'}">${cnt}/${SEND_CAP}</span>`}</td>
     </tr>`;
   }).join('');
   updateSelCount();
 }
 
-function getSelected(){return[...document.querySelectorAll('.row-cb:checked')].map(cb=>dbFiltered[+cb.dataset.idx]);}
-function selectAll(){document.querySelectorAll('.row-cb:not(:disabled)').forEach(cb=>cb.checked=true);updateSelCount();}
-function deselectAll(){document.querySelectorAll('.row-cb').forEach(cb=>cb.checked=false);updateSelCount();}
-function toggleAll(m){document.querySelectorAll('.row-cb:not(:disabled)').forEach(cb=>cb.checked=m.checked);updateSelCount();}
-function updateSelCount(){document.getElementById('sel-count').textContent=document.querySelectorAll('.row-cb:checked').length+' selected';}
+function getSelected() { return [...document.querySelectorAll('.row-cb:checked')].map(cb => dbFiltered[+cb.dataset.idx]); }
+function selectAll() { document.querySelectorAll('.row-cb:not(:disabled)').forEach(cb => cb.checked = true); updateSelCount(); }
+function deselectAll() { document.querySelectorAll('.row-cb').forEach(cb => cb.checked = false); updateSelCount(); }
+function toggleAll(m) { document.querySelectorAll('.row-cb:not(:disabled)').forEach(cb => cb.checked = m.checked); updateSelCount(); }
+function updateSelCount() { document.getElementById('sel-count').textContent = document.querySelectorAll('.row-cb:checked').length + ' selected'; }
 
-/* STEPS */
-function addStep(data){
-  const s=data||{id:Date.now(),delay:0,delayUnit:'hours',templateid:'ghc_mkt01',mediaid:'1440105454122506',condition:'always'};
-  if(!data)steps.push(s);
-  renderSteps();saveState();
+/* ═══════════════════════════════════════
+   STEPS
+═══════════════════════════════════════ */
+function addStep(data) {
+  const s = data || { id: Date.now(), delay: 0, delayUnit: 'hours', templateid: 'ghc_mkt01', mediaid: '1440105454122506', condition: 'always' };
+  if (!data) steps.push(s);
+  renderSteps(); saveState();
 }
 
-function renderSteps(){
-  const c=document.getElementById('steps-container');
-  c.innerHTML='';
-  steps.forEach((s,i)=>{
-    if(i>0){
-      const conn=document.createElement('div');
-      conn.className='connector';
-      conn.textContent=`↓ wait ${steps[i-1].delay} ${steps[i-1].delayUnit}`;
+function renderSteps() {
+  const c = document.getElementById('steps-container');
+  c.innerHTML = '';
+  steps.forEach((s, i) => {
+    if (i > 0) {
+      const conn = document.createElement('div');
+      conn.className = 'connector';
+      conn.textContent = `↓ wait ${steps[i-1].delay} ${steps[i-1].delayUnit}`;
       c.appendChild(conn);
     }
-    const div=document.createElement('div');
-    div.className='step-card';
-    div.innerHTML=`
-      <div class="step-hdr"><span class="step-badge">STEP ${i+1}</span><button class="step-del" onclick="removeStep(${i})">×</button></div>
+    const div = document.createElement('div');
+    div.className = 'step-card';
+    div.innerHTML = `
+      <div class="step-hdr">
+        <span class="step-badge">STEP ${i + 1}</span>
+        <button class="step-del" onclick="removeStep(${i})">×</button>
+      </div>
       <div class="row">
         <div class="col-sm"><label>Delay</label><input type="number" min="0" value="${s.delay}" onchange="steps[${i}].delay=+this.value;renderSteps();saveState()"/></div>
-        <div class="col-xs"><label>Unit</label><select onchange="steps[${i}].delayUnit=this.value;renderSteps();saveState()">
-          <option ${s.delayUnit==='minutes'?'selected':''}>minutes</option>
-          <option ${s.delayUnit==='hours'?'selected':''}>hours</option>
-          <option ${s.delayUnit==='days'?'selected':''}>days</option>
-        </select></div>
+        <div class="col-xs"><label>Unit</label>
+          <select onchange="steps[${i}].delayUnit=this.value;renderSteps();saveState()">
+            <option ${s.delayUnit==='minutes'?'selected':''}>minutes</option>
+            <option ${s.delayUnit==='hours'?'selected':''}>hours</option>
+            <option ${s.delayUnit==='days'?'selected':''}>days</option>
+          </select>
+        </div>
         <div class="col"><label>Template ID</label><input type="text" value="${s.templateid}" onchange="steps[${i}].templateid=this.value;saveState()" placeholder="ghc_mkt01"/></div>
         <div class="col"><label>Media ID</label><input type="text" value="${s.mediaid}" onchange="steps[${i}].mediaid=this.value;saveState()" placeholder="1440105454122506"/></div>
-        <div class="col-xs"><label>Condition</label><select onchange="steps[${i}].condition=this.value;saveState()">
-          <option value="always" ${s.condition==='always'?'selected':''}>Always</option>
-          <option value="no_reply" ${s.condition==='no_reply'?'selected':''}>No reply</option>
-        </select></div>
+        <div class="col-xs"><label>Condition</label>
+          <select onchange="steps[${i}].condition=this.value;saveState()">
+            <option value="always" ${s.condition==='always'?'selected':''}>Always</option>
+            <option value="no_reply" ${s.condition==='no_reply'?'selected':''}>No reply</option>
+          </select>
+        </div>
       </div>
-      <div class="hint" style="margin-top:8px">Placeholders auto-filled: {{1}} = Name · {{2}} = BDE number · {{3}} = BDE name</div>`;
+      <div class="hint" style="margin-top:8px">{{1}}=Name · {{2}}=BDE number · {{3}}=BDE name — auto-filled from contact</div>`;
     c.appendChild(div);
   });
 }
 
-function removeStep(i){steps.splice(i,1);renderSteps();saveState();}
+function removeStep(i) { steps.splice(i, 1); renderSteps(); saveState(); }
 
-/* REVIEW */
-function buildReview(){
-  const name=document.getElementById('camp-name').value;
-  document.getElementById('rev-cnt').textContent=contacts.length;
-  document.getElementById('review-summary').innerHTML=`
+/* ═══════════════════════════════════════
+   REVIEW
+═══════════════════════════════════════ */
+function buildReview() {
+  const name = document.getElementById('camp-name').value;
+  document.getElementById('rev-cnt').textContent = contacts.length;
+  document.getElementById('review-summary').innerHTML = `
     <div class="row" style="gap:20px;flex-wrap:wrap;margin-bottom:14px">
-      <div><div style="font-size:11px;color:var(--text3)">Campaign</div><div style="font-size:15px;font-weight:500;margin-top:3px">${name||'(unnamed)'}</div></div>
+      <div><div style="font-size:11px;color:var(--text3)">Campaign</div><div style="font-size:15px;font-weight:500;margin-top:3px">${name || '(unnamed)'}</div></div>
       <div><div style="font-size:11px;color:var(--text3)">Contacts</div><div style="font-size:15px;font-weight:500;margin-top:3px">${contacts.length}</div></div>
       <div><div style="font-size:11px;color:var(--text3)">Steps</div><div style="font-size:15px;font-weight:500;margin-top:3px">${steps.length}</div></div>
-      <div><div style="font-size:11px;color:var(--text3)">Total messages</div><div style="font-size:15px;font-weight:500;margin-top:3px">${contacts.length*steps.length}</div></div>
+      <div><div style="font-size:11px;color:var(--text3)">Total msgs</div><div style="font-size:15px;font-weight:500;margin-top:3px">${contacts.length * steps.length}</div></div>
       <div><div style="font-size:11px;color:var(--text3)">Send cap</div><div style="font-size:15px;font-weight:500;margin-top:3px;color:var(--warning)">${SEND_CAP}/number</div></div>
     </div>
     <div class="divider"></div>
-    ${steps.map((s,i)=>`<div style="font-size:12px;font-family:var(--fm);color:var(--text2);margin-bottom:5px">Step ${i+1}: <span style="color:var(--accent)">${s.templateid}</span> · media <span style="color:var(--text)">${s.mediaid}</span>${i>0?' · after '+s.delay+' '+s.delayUnit:' · immediate'}</div>`).join('')}`;
+    ${steps.map((s, i) => `<div style="font-size:12px;font-family:var(--fm);color:var(--text2);margin-bottom:5px">Step ${i+1}: <span style="color:var(--accent)">${s.templateid}</span> · media ${s.mediaid}${i > 0 ? ' · after ' + s.delay + ' ' + s.delayUnit : ' · immediate'}</div>`).join('')}`;
 
-  document.getElementById('review-contacts').innerHTML=
-    contacts.slice(0,8).map(c=>`
+  document.getElementById('review-contacts').innerHTML =
+    contacts.slice(0, 8).map(c => `
       <div class="c-row">
-        <div class="avatar">${(c.name||'?').slice(0,2).toUpperCase()}</div>
+        <div class="avatar">${(c.name || '?').slice(0, 2).toUpperCase()}</div>
         <div style="flex:1">
           <div style="font-size:13px;font-weight:500">${c.name}</div>
-          <div style="font-size:11px;font-family:var(--fm);color:var(--text3)">${c.phone} · BDE: ${c.bde_number||'—'}</div>
+          <div style="font-size:11px;font-family:var(--fm);color:var(--text3)">${c.phone} · BDE: ${c.bde_number || '—'}</div>
         </div>
-        <span class="pill ${c.skipReason?'pill-cap':'pill-q'}">${c.skipReason?'capped':c.status}</span>
-      </div>`).join('')+
-    (contacts.length>8?`<div style="font-size:12px;color:var(--text3);padding:8px 0;text-align:center">…and ${contacts.length-8} more</div>`:'');
+        <span class="pill ${c.skipReason ? 'pill-cap' : 'pill-q'}">${c.skipReason ? 'capped' : c.status}</span>
+      </div>`).join('') +
+    (contacts.length > 8 ? `<div style="font-size:12px;color:var(--text3);padding:8px 0;text-align:center">…and ${contacts.length - 8} more</div>` : '');
 }
 
-/* PREFLIGHT */
-async function runPreflight(){
-  const el=document.getElementById('preflight-status');
-  el.innerHTML='<span style="color:var(--text2);font-family:var(--fm);font-size:12px">Checking send counts from Google Sheet…</span>';
-  let capped=0,ok=0,errors=0;
-  for(const c of contacts){
-    try{
-      const res=await fetch(`${GAS_URL}?tab=WhatsApp+Logs&mobile=${encodeURIComponent(c.phone)}`);
-      const d=await res.json();
-      const cnt=d.count||0;
-      sendCounts[c.phone]=cnt;
-      if(cnt>=SEND_CAP){c.skipReason=`cap (${cnt}/${SEND_CAP})`;capped++;}
-      else{c.skipReason='';ok++;}
-    }catch(e){errors++;}
+/* ═══════════════════════════════════════
+   PREFLIGHT
+═══════════════════════════════════════ */
+async function runPreflight() {
+  openOverlay('Pre-flight check · ' + contacts.length + ' contacts');
+  let capped = 0, ok = 0, errors = 0;
+  for (const c of contacts) {
+    overlayLog('Checking ' + c.name + ' (' + c.phone + ')…', 'info');
+    try {
+      const res = await fetch(`${GAS_URL}?tab=WhatsApp+Logs&mobile=${encodeURIComponent(c.phone)}`);
+      const d = await res.json();
+      const cnt = d.count || 0;
+      sendCounts[c.phone] = cnt;
+      if (cnt >= SEND_CAP) {
+        c.skipReason = `cap (${cnt}/${SEND_CAP})`;
+        overlayLog(`${c.name}: CAPPED — ${cnt}/${SEND_CAP} messages already sent`, 'warn');
+        capped++;
+      } else {
+        c.skipReason = '';
+        overlayLog(`${c.name}: OK — ${cnt}/${SEND_CAP} sent`, 'ok');
+        ok++;
+      }
+    } catch(e) {
+      overlayLog(`${c.name}: check failed — ${e.message}`, 'err');
+      errors++;
+    }
   }
-  // refresh table counts
   renderTable();
   saveState();
-  el.innerHTML=`
+  overlayDone(`${ok} eligible · ${capped} capped · ${errors} errors`);
+  const el = document.getElementById('preflight-status');
+  el.innerHTML = `
     <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13px;margin-bottom:8px">
-      <span style="color:var(--success)">✓ ${ok} eligible to send</span>
-      <span style="color:var(--danger)">⊘ ${capped} capped (≥${SEND_CAP} msgs sent)</span>
-      ${errors?`<span style="color:var(--warning)">⚠ ${errors} check errors</span>`:''}
+      <span style="color:var(--success)">✓ ${ok} eligible</span>
+      <span style="color:var(--danger)">⊘ ${capped} capped (≥${SEND_CAP})</span>
+      ${errors ? `<span style="color:var(--warning)">⚠ ${errors} errors</span>` : ''}
     </div>
-    <div class="hint">Capped contacts will be auto-skipped. Eligible contacts proceed through all steps.</div>`;
-  addLog(`Preflight: ${ok} eligible · ${capped} capped · ${errors} errors`,'info');
+    <div class="hint">Capped contacts auto-skipped during send.</div>`;
+  addLog(`Preflight: ${ok} eligible · ${capped} capped · ${errors} errors`, 'info');
   buildReview();
 }
 
-/* LAUNCH */
-async function launchCampaign(){
-  if(!contacts.length){alert('No contacts selected. Go back to Audience.');return;}
-  if(!steps.length){alert('No steps configured. Go back to Sequence.');return;}
-  if(campaignRunning){alert('Campaign already running.');return;}
-  campaignRunning=true;
+/* ═══════════════════════════════════════
+   LAUNCH
+═══════════════════════════════════════ */
+async function launchCampaign() {
+  if (!contacts.length) { alert('No contacts. Go back to Audience.'); return; }
+  if (!steps.length) { alert('No steps. Go back to Sequence.'); return; }
+  if (campaignRunning) { alert('Already running.'); return; }
+  campaignRunning = true;
+  const campName = document.getElementById('camp-name').value || 'Campaign';
+  openOverlay('Launching: ' + campName);
+  overlayLog(`${contacts.length} contacts · ${steps.length} steps`, 'info');
   goStep(4);
-  const campName=document.getElementById('camp-name').value||'Campaign';
-  addLog(`▶ "${campName}" launched · ${contacts.length} contacts · ${steps.length} steps`,'ok');
 
-  for(let ci=0;ci<contacts.length;ci++){
-    if(!campaignRunning)break;
-    const c=contacts[ci];
+  addLog(`▶ "${campName}" launched · ${contacts.length} contacts · ${steps.length} steps`, 'ok');
 
-    // Fetch live count if not cached
-    if(sendCounts[c.phone]===undefined){
-      try{
-        const res=await fetch(`${GAS_URL}?tab=WhatsApp+Logs&mobile=${encodeURIComponent(c.phone)}`);
-        const d=await res.json();
-        sendCounts[c.phone]=d.count||0;
-      }catch(e){sendCounts[c.phone]=0;}
+  for (let ci = 0; ci < contacts.length; ci++) {
+    if (!campaignRunning) { overlayLog('Stopped by user', 'warn'); break; }
+    const c = contacts[ci];
+
+    // Fetch count if not cached
+    if (sendCounts[c.phone] === undefined) {
+      try {
+        const res = await fetch(`${GAS_URL}?tab=WhatsApp+Logs&mobile=${encodeURIComponent(c.phone)}`);
+        const d = await res.json();
+        sendCounts[c.phone] = d.count || 0;
+      } catch(e) { sendCounts[c.phone] = 0; }
     }
 
-    if((sendCounts[c.phone]||0)>=SEND_CAP){
-      c.status='skipped';c.skipReason=`cap (${sendCounts[c.phone]}/${SEND_CAP})`;
-      addLog(`${c.name} (${c.phone}): skipped — cap reached (${sendCounts[c.phone]}/${SEND_CAP})`,'skip');
-      renderMonitor();saveState();continue;
+    if ((sendCounts[c.phone] || 0) >= SEND_CAP) {
+      c.status = 'skipped'; c.skipReason = `cap (${sendCounts[c.phone]}/${SEND_CAP})`;
+      overlayLog(`${c.name}: SKIPPED — cap reached (${sendCounts[c.phone]}/${SEND_CAP})`, 'skip');
+      addLog(`${c.name}: skipped — cap`, 'skip');
+      renderMonitor(); saveState(); continue;
     }
 
-    c.status='pending';renderMonitor();
+    c.status = 'pending'; renderMonitor();
 
-    for(let si=0;si<steps.length;si++){
-      if(!campaignRunning)break;
-      const step=steps[si];
+    for (let si = 0; si < steps.length; si++) {
+      if (!campaignRunning) break;
+      const step = steps[si];
 
-      // Re-check cap before each step
-      if((sendCounts[c.phone]||0)>=SEND_CAP){
-        addLog(`${c.name}: step ${si+1} skipped — cap hit mid-drip (${sendCounts[c.phone]}/${SEND_CAP})`,'skip');
-        c.skipReason=`cap at step ${si+1}`;break;
+      if ((sendCounts[c.phone] || 0) >= SEND_CAP) {
+        overlayLog(`${c.name}: cap hit at step ${si + 1}`, 'warn');
+        c.skipReason = `cap at step ${si + 1}`; break;
       }
 
-      if(si>0&&step.delay>0){
-        const ms=step.delay*(step.delayUnit==='days'?86400000:step.delayUnit==='hours'?3600000:60000);
-        addLog(`${c.name}: waiting ${step.delay} ${step.delayUnit} before step ${si+1}…`,'warn');
-        await delay(Math.min(ms,5000));
+      if (si > 0 && step.delay > 0) {
+        const ms = step.delay * (step.delayUnit === 'days' ? 86400000 : step.delayUnit === 'hours' ? 3600000 : 60000);
+        overlayLog(`${c.name}: waiting ${step.delay} ${step.delayUnit}…`, 'warn');
+        addLog(`${c.name}: waiting ${step.delay} ${step.delayUnit} before step ${si + 1}`, 'warn');
+        await delay(Math.min(ms, 5000));
       }
 
-      addLog(`${c.name} (${c.phone}): step ${si+1} · template=${step.templateid}`,'info');
+      overlayLog(`${c.name} → step ${si + 1} · template: ${step.templateid}`, 'info');
+      addLog(`${c.name} (${c.phone}): step ${si + 1} · ${step.templateid}`, 'info');
 
-      const payload={
-        user:API_USER,pass:API_PASS,
-        whatsapptosend:[{
-          from:API_FROM,to:c.phone,
-          templateid:step.templateid,mediaid:step.mediaid,
-          smsgid:c.phone+'_s'+si+'_'+Date.now(),
-          placeholders:[{"1":c.name,"2":c.bde_number,"3":c.bde_name}]
+      const payload = {
+        user: API_USER, pass: API_PASS,
+        whatsapptosend: [{
+          from: API_FROM, to: c.phone,
+          templateid: step.templateid, mediaid: step.mediaid,
+          smsgid: c.phone + '_s' + si + '_' + Date.now(),
+          placeholders: [{ "1": c.name, "2": c.bde_number, "3": c.bde_name }]
         }]
       };
 
-      let ok=false,respText='';
-      try{
-        const res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-        respText=await res.text();
-        ok=res.ok||res.status===200;
-      }catch(e){respText=e.message;}
+      let ok = false, respText = '';
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        respText = await res.text();
+        ok = res.ok || res.status === 200;
+        overlayLog(`API response (${res.status}): ${respText.slice(0, 120)}`, ok ? 'ok' : 'err');
+      } catch(e) {
+        respText = e.message;
+        overlayLog(`API call failed: ${e.message}`, 'err');
+      }
 
-      if(ok)sendCounts[c.phone]=(sendCounts[c.phone]||0)+1;
-      const newCnt=sendCounts[c.phone]||0;
+      if (ok) sendCounts[c.phone] = (sendCounts[c.phone] || 0) + 1;
+      const newCnt = sendCounts[c.phone] || 0;
 
-      // Log to Google Sheet
-      try{
-        await fetch(GAS_URL,{
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({
-            mobile:c.phone,name:c.name,templateid:step.templateid,
-            status:ok?'success':'failed',
-            response:respText.slice(0,300),
-            campaign:campName,step:'Step '+(si+1),
-            sendCount:newCnt+'/'+SEND_CAP
+      // Sheet log
+      try {
+        await fetch(GAS_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            mobile: c.phone, name: c.name, templateid: step.templateid,
+            status: ok ? 'success' : 'failed',
+            response: respText.slice(0, 300),
+            campaign: campName, step: 'Step ' + (si + 1),
+            sendCount: newCnt + '/' + SEND_CAP
           })
         });
-      }catch(e){}
-
-      if(ok){
-        c.sentSteps.push(si);
-        addLog(`${c.name}: step ${si+1} ✓ sent · total=${newCnt}/${SEND_CAP}`,'ok');
-      }else{
-        addLog(`${c.name}: step ${si+1} ✗ failed — ${respText.slice(0,100)}`,'err');
-        c.status='failed';break;
+        overlayLog('Logged to Google Sheet ✓', 'ok');
+      } catch(e) {
+        overlayLog('Sheet log failed: ' + e.message, 'err');
       }
-      renderMonitor();saveState();
+
+      if (ok) {
+        c.sentSteps.push(si);
+        overlayLog(`${c.name}: step ${si + 1} ✓ sent (${newCnt}/${SEND_CAP} total)`, 'ok');
+        addLog(`${c.name}: step ${si + 1} ✓ · total=${newCnt}/${SEND_CAP}`, 'ok');
+      } else {
+        overlayLog(`${c.name}: step ${si + 1} ✗ FAILED`, 'err');
+        addLog(`${c.name}: step ${si + 1} ✗ failed — ${respText.slice(0, 80)}`, 'err');
+        c.status = 'failed'; break;
+      }
+      renderMonitor(); saveState();
       await delay(400);
     }
 
-    if(c.status==='pending')c.status=c.sentSteps.length===steps.length?'sent':'failed';
-    renderMonitor();saveState();
+    if (c.status === 'pending') c.status = c.sentSteps.length === steps.length ? 'sent' : 'failed';
+    renderMonitor(); saveState();
   }
 
-  campaignRunning=false;
-  addLog('■ Drip complete.','ok');
+  campaignRunning = false;
+  overlayLog('Drip complete.', 'ok');
+  addLog('■ Drip complete.', 'ok');
+  overlayDone('Campaign complete · ' + contacts.filter(c => c.status === 'sent').length + ' sent');
   saveState();
 }
 
-function stopCampaign(){
-  campaignRunning=false;
-  contacts.forEach(c=>{if(c.status==='pending')c.status='queued';});
-  renderMonitor();saveState();
-  addLog('■ Stopped by user.','err');
+function stopCampaign() {
+  campaignRunning = false;
+  contacts.forEach(c => { if (c.status === 'pending') c.status = 'queued'; });
+  renderMonitor(); saveState();
+  addLog('■ Stopped by user.', 'err');
 }
 
-/* MONITOR */
-function renderMonitor(){
-  const list=document.getElementById('monitor-list');
-  if(!contacts.length){list.innerHTML='<div class="empty">No contacts loaded.</div>';updateMetrics();return;}
-  list.innerHTML=contacts.map(c=>{
-    const pct=steps.length?Math.round(c.sentSteps.length/steps.length*100):0;
-    const sc={sent:'pill-s',failed:'pill-f',skipped:'pill-sk',pending:'pill-p',queued:'pill-q'}[c.status]||'pill-q';
-    const cnt=sendCounts[c.phone]||0;
-    return`<div class="c-row">
-      <div class="avatar">${(c.name||'?').slice(0,2).toUpperCase()}</div>
+/* ═══════════════════════════════════════
+   MONITOR
+═══════════════════════════════════════ */
+function renderMonitor() {
+  const list = document.getElementById('monitor-list');
+  if (!contacts.length) { list.innerHTML = '<div class="empty">No contacts loaded.</div>'; updateMetrics(); return; }
+  list.innerHTML = contacts.map(c => {
+    const pct = steps.length ? Math.round(c.sentSteps.length / steps.length * 100) : 0;
+    const sc = { sent:'pill-s', failed:'pill-f', skipped:'pill-sk', pending:'pill-p', queued:'pill-q' }[c.status] || 'pill-q';
+    return `<div class="c-row">
+      <div class="avatar">${(c.name || '?').slice(0, 2).toUpperCase()}</div>
       <div style="flex:1">
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <span style="font-size:13px;font-weight:500">${c.name}</span>
           <span style="font-size:11px;font-family:var(--fm);color:var(--text3)">${c.phone}</span>
-          ${c.skipReason?`<span style="font-size:10px;color:var(--info);font-family:var(--fm)">${c.skipReason}</span>`:''}
+          ${c.skipReason ? `<span style="font-size:10px;color:var(--info);font-family:var(--fm)">${c.skipReason}</span>` : ''}
         </div>
-        <div style="font-size:11px;color:var(--text3);margin-top:2px">Step ${c.sentSteps.length}/${steps.length} complete · lifetime msgs: ${cnt}/${SEND_CAP}</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:2px">Step ${c.sentSteps.length}/${steps.length} · lifetime: ${sendCounts[c.phone] || 0}/${SEND_CAP}</div>
         <div class="pbar"><div class="pfill" style="width:${pct}%"></div></div>
       </div>
       <span class="pill ${sc}">${c.status}</span>
@@ -829,60 +1117,69 @@ function renderMonitor(){
   updateMetrics();
 }
 
-function updateMetrics(){
-  document.getElementById('m-total').textContent=contacts.length;
-  document.getElementById('m-sent').textContent=contacts.filter(c=>c.status==='sent').length;
-  document.getElementById('m-pending').textContent=contacts.filter(c=>c.status==='queued'||c.status==='pending').length;
-  document.getElementById('m-failed').textContent=contacts.filter(c=>c.status==='failed').length;
-  document.getElementById('m-skipped').textContent=contacts.filter(c=>c.status==='skipped').length;
+function updateMetrics() {
+  document.getElementById('m-total').textContent = contacts.length;
+  document.getElementById('m-sent').textContent = contacts.filter(c => c.status === 'sent').length;
+  document.getElementById('m-pending').textContent = contacts.filter(c => c.status === 'queued' || c.status === 'pending').length;
+  document.getElementById('m-failed').textContent = contacts.filter(c => c.status === 'failed').length;
+  document.getElementById('m-skipped').textContent = contacts.filter(c => c.status === 'skipped').length;
 }
 
-/* LOG */
-function addLog(msg,type='info'){
-  const now=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
-  logs.unshift({time:now,msg,type});
-  if(logs.length>500)logs.pop();
-  renderLog();saveState();
+/* ═══════════════════════════════════════
+   LOG
+═══════════════════════════════════════ */
+function addLog(msg, type = 'info') {
+  const now = new Date().toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false });
+  logs.unshift({ time: now, msg, type });
+  if (logs.length > 500) logs.pop();
+  renderLog();
+  saveState();
 }
-function renderLog(){
-  const lc=document.getElementById('log-container');
-  if(!logs.length){lc.innerHTML='<div class="empty">No activity yet.</div>';return;}
-  lc.innerHTML=logs.map(l=>`<div class="log-row"><span class="log-time">${l.time}</span><span class="log-${l.type}">${l.msg}</span></div>`).join('');
+
+function renderLog() {
+  const lc = document.getElementById('log-container');
+  if (!logs.length) { lc.innerHTML = '<div class="empty">No activity yet.</div>'; return; }
+  lc.innerHTML = logs.map(l => `<div class="log-row"><span class="log-time">${l.time}</span><span class="log-${l.type}">${l.msg}</span></div>`).join('');
 }
-function clearLog(){logs=[];renderLog();saveState();}
-function exportLog(){
-  const rows=[['Time','Message','Type'],...logs.map(l=>[l.time,l.msg,l.type])];
-  const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
-  const a=document.createElement('a');
-  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
-  a.download='wa-drip-log-'+new Date().toISOString().slice(0,10)+'.csv';
+
+function clearLog() { logs = []; renderLog(); saveState(); }
+
+function exportLog() {
+  const rows = [['Time', 'Message', 'Type'], ...logs.map(l => [l.time, l.msg, l.type])];
+  const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'wa-drip-log-' + new Date().toISOString().slice(0, 10) + '.csv';
   a.click();
 }
 
-function delay(ms){return new Promise(r=>setTimeout(r,ms));}
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-/* INIT */
-(function init(){
-  const saved=loadSaved();
-  if(saved){
-    steps=saved.steps||[];
-    contacts=(saved.contacts||[]).map(c=>({...c,status:c.status==='pending'?'queued':c.status}));
-    logs=saved.logs||[];
-    sendCounts=saved.sendCounts||{};
-    if(steps.length)renderSteps();
-    else addStep({id:1,delay:0,delayUnit:'hours',templateid:'ghc_mkt01',mediaid:'1440105454122506',condition:'always'});
-    if(contacts.length)renderMonitor();
+/* ═══════════════════════════════════════
+   INIT
+═══════════════════════════════════════ */
+(function init() {
+  const saved = loadSaved();
+  if (saved) {
+    steps = saved.steps || [];
+    contacts = (saved.contacts || []).map(c => ({ ...c, status: c.status === 'pending' ? 'queued' : c.status }));
+    logs = saved.logs || [];
+    sendCounts = saved.sendCounts || {};
+    if (steps.length) renderSteps();
+    else addStep({ id: 1, delay: 0, delayUnit: 'hours', templateid: 'ghc_mkt01', mediaid: '1440105454122506', condition: 'always' });
+    if (contacts.length) renderMonitor();
     renderLog();
-    if(saved.campName)document.getElementById('camp-name').value=saved.campName;
-    if(saved.triggerIdx!=null)document.getElementById('trigger').selectedIndex=saved.triggerIdx;
-  }else{
-    addStep({id:1,delay:0,delayUnit:'hours',templateid:'ghc_mkt01',mediaid:'1440105454122506',condition:'always'});
+    if (saved.campName) document.getElementById('camp-name').value = saved.campName;
+    if (saved.triggerIdx != null) document.getElementById('trigger').selectedIndex = saved.triggerIdx;
+  } else {
+    addStep({ id: 1, delay: 0, delayUnit: 'hours', templateid: 'ghc_mkt01', mediaid: '1440105454122506', condition: 'always' });
   }
-  document.getElementById('camp-name').addEventListener('input',saveState);
-  document.getElementById('trigger').addEventListener('change',saveState);
-  if(!loadDBFromStorage()){
-    // show upload zone (already visible by default)
-  }
+
+  document.getElementById('camp-name').addEventListener('input', saveState);
+  document.getElementById('trigger').addEventListener('change', saveState);
+
+  // Restore DB from cache
+  restoreDB();
 })();
 </script>
 </body>
