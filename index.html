@@ -879,7 +879,7 @@ function renderSteps() {
           </select>
         </div>
       </div>
-      <div class="hint" style="margin-top:8px">{{1}}=Name · {{2}}=BDE number · {{3}}=BDE name — auto-filled from contact</div>`;
+      <div class="hint" style="margin-top:8px">{{1}}=Name (placeholder 0) · {{2}}=BDE number (1) · {{3}}=BDE name (2) — 0-indexed, auto-filled</div>`;
     c.appendChild(div);
   });
 }
@@ -1020,7 +1020,7 @@ async function launchCampaign() {
           from: API_FROM, to: c.phone,
           templateid: step.templateid, mediaid: step.mediaid,
           smsgid: c.phone + '_s' + si + '_' + Date.now(),
-          placeholders: [{ "1": c.name, "2": c.bde_number, "3": c.bde_name }]
+          placeholders: [{ "0": c.name, "1": c.bde_number, "2": c.bde_name }]
         }]
       };
 
