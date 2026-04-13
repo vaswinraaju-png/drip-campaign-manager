@@ -448,7 +448,7 @@ tbody td{padding:8px 12px;color:var(--text);vertical-align:middle}
 <script>
 /* ═══ CONFIG ═══ */
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbw_C69HyzJG8TH-d5OwsZjVkqQJirADCiCK7KJYBVB199H5QeNwzsn3mFT4OPMgk8-PQQ/exec';
-const API_URL = 'https://media.sendmsg.in/mediasend';
+// API_URL now proxied via GAS to avoid CORS — see proxyTarget:'mediasend'
 const API_USER = 'terratern';
 const API_PASS = 'TtBFAKMDLkpJ';
 const API_FROM = '918123378405';
@@ -1026,14 +1026,27 @@ async function launchCampaign() {
 
       let ok = false, respText = '';
       try {
-        const res = await fetch(API_URL, {
+        // Route through GAS proxy to avoid CORS
+        const res = await fetch(GAS_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          body: JSON.stringify({ proxyTarget: 'mediasend', payload })
         });
         respText = await res.text();
-        ok = res.ok || res.status === 200;
-        overlayLog(`API response (${res.status}): ${respText.slice(0, 120)}`, ok ? 'ok' : 'err');
+        // GAS proxy returns the raw mediasend response as text
+        let parsed = null;
+        try { parsed = JSON.parse(respText); } catch(e) {}
+        // Success = array response with 'to' field OR no error field
+        if (parsed && Array.isArray(parsed) && parsed[0] && parsed[0].to) {
+          ok = true;
+        } else if (parsed && parsed.status === false) {
+          ok = false;
+        } else if (parsed && parsed.success === false) {
+          ok = false;
+        } else {
+          ok = res.ok;
+        }
+        overlayLog(`API response: ${respText.slice(0, 200)}`, ok ? 'ok' : 'err');
       } catch(e) {
         respText = e.message;
         overlayLog(`API call failed: ${e.message}`, 'err');
