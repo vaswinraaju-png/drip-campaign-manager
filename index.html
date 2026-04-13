@@ -155,13 +155,41 @@ tbody td{padding:8px 12px;color:var(--text);vertical-align:middle}
 <!-- STEP 1: AUDIENCE -->
 <div id="panel-1" class="panel active">
   <div class="ph">
-    <div><div class="ph-title">Audience</div><div class="ph-sub">Filter leads from DB · select who to message</div></div>
-    <button class="btn btn-sm btn-ghost" onclick="loadDB()">
-      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 8A6 6 0 112 8"/><path d="M14 2v6h-6"/></svg>
-      Reload DB
-    </button>
+    <div><div class="ph-title">Audience</div><div class="ph-sub">Upload your DB · filter · select who to message</div></div>
+    <div class="act-right">
+      <button class="btn btn-sm btn-ghost" onclick="document.getElementById('csv-file').click()">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 1v9M4 6l4-4 4 4"/><path d="M2 12h12v2H2z"/></svg>
+        Upload CSV / TSV
+      </button>
+      <button class="btn btn-sm btn-ghost" onclick="showPastePanel()">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="2" width="10" height="12" rx="1"/><path d="M6 2V1h4v1"/><line x1="5" y1="6" x2="11" y2="6"/><line x1="5" y1="9" x2="9" y2="9"/></svg>
+        Paste JSON
+      </button>
+      <input type="file" id="csv-file" accept=".csv,.tsv,.txt" style="display:none" onchange="handleFileUpload(this)"/>
+    </div>
   </div>
-  <div class="card">
+
+  <!-- UPLOAD ZONE -->
+  <div id="upload-zone" class="card" style="border:1.5px dashed var(--border2);text-align:center;padding:36px 20px;cursor:pointer" onclick="document.getElementById('csv-file').click()" ondragover="event.preventDefault();this.style.borderColor='var(--accent)'" ondragleave="this.style.borderColor='var(--border2)'" ondrop="handleDrop(event)">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.5" style="margin:0 auto 12px"><path d="M12 2v12M7 7l5-5 5 5"/><path d="M3 17h18v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3z"/></svg>
+    <div style="font-size:14px;color:var(--text2);margin-bottom:6px">Drop CSV here or click to upload</div>
+    <div style="font-size:11px;color:var(--text3);font-family:var(--fm)">Export your Google Sheet DB tab as CSV · or paste JSON below</div>
+    <div style="font-size:11px;color:var(--text3);font-family:var(--fm);margin-top:4px">Expected columns: fullname, mobile, application, lead_status, work_experience, highest_education, bde_name, bde_number, created_at</div>
+  </div>
+
+  <!-- PASTE PANEL -->
+  <div id="paste-panel" class="card" style="display:none">
+    <div class="card-title">Paste JSON array from Google Sheet</div>
+    <textarea id="paste-json" style="min-height:120px;font-size:11px" placeholder='[{"fullname":"Achu","mobile":"917094956963","lead_status":"Applied","application":"Immigration Germany",...}]'></textarea>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="btn btn-accent btn-sm" onclick="loadFromPaste()">Load data</button>
+      <button class="btn btn-sm btn-ghost" onclick="hidePastePanel()">Cancel</button>
+    </div>
+    <div class="hint">Paste the JSON array from your Apps Script URL: GAS_URL?tab=DB — open in browser, copy all, paste here</div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="card" id="filter-card" style="display:none">
     <div class="card-title">Filters</div>
     <div class="filter-grid">
       <div><label>Lead status</label><select id="f-status" onchange="applyFilters()"><option value="">All</option></select></div>
@@ -174,13 +202,15 @@ tbody td{padding:8px 12px;color:var(--text);vertical-align:middle}
     <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
       <button class="btn btn-sm" onclick="selectAll()">Select all visible</button>
       <button class="btn btn-sm btn-ghost" onclick="deselectAll()">Deselect all</button>
+      <button class="btn btn-sm btn-ghost" onclick="clearDB()">✕ Clear data</button>
       <span id="sel-count" style="font-size:12px;color:var(--text2)">0 selected</span>
       <span id="db-status" style="font-size:11px;color:var(--text3);margin-left:auto;font-family:var(--fm)"></span>
     </div>
   </div>
-  <div class="card" style="padding:0;overflow:hidden">
-    <div id="db-loading" class="empty" style="padding:32px">Loading DB from Google Sheets…</div>
-    <div class="tbl-wrap" id="tbl-wrap" style="display:none">
+
+  <!-- TABLE -->
+  <div class="card" id="tbl-card" style="padding:0;overflow:hidden;display:none">
+    <div class="tbl-wrap" id="tbl-wrap">
       <table>
         <thead><tr>
           <th><input type="checkbox" class="cb" id="cb-all" onchange="toggleAll(this)"/></th>
@@ -191,8 +221,9 @@ tbody td{padding:8px 12px;color:var(--text);vertical-align:middle}
       </table>
     </div>
   </div>
+
   <div class="act-bar">
-    <span style="font-size:12px;color:var(--text3)">Select contacts then proceed →</span>
+    <span style="font-size:12px;color:var(--text3)" id="audience-hint">Upload or paste DB data to get started</span>
     <button class="btn btn-accent" onclick="nextStep(1)">Next: Sequence →</button>
   </div>
 </div>
@@ -354,29 +385,141 @@ function nextStep(from){
   goStep(from+1);
 }
 
-/* DB LOAD */
-async function loadDB(){
-  document.getElementById('db-loading').style.display='block';
-  document.getElementById('db-loading').textContent='Loading DB from Google Sheets…';
-  document.getElementById('tbl-wrap').style.display='none';
-  document.getElementById('db-status').textContent='Fetching…';
+/* DB LOAD — upload/paste based */
+function showPastePanel(){document.getElementById('paste-panel').style.display='block';}
+function hidePastePanel(){document.getElementById('paste-panel').style.display='none';}
+
+function normaliseRows(rows){
+  return rows.filter(r=>{
+    const keys=Object.keys(r).map(k=>k.toLowerCase());
+    return keys.some(k=>k.includes('mobile')||k.includes('phone'));
+  }).map(r=>{
+    const n={};
+    Object.keys(r).forEach(k=>n[k.toLowerCase().trim().replace(/\s+/g,'_')]=r[k]);
+    // alias common variants
+    if(!n.mobile&&n.phone)n.mobile=n.phone;
+    if(!n.fullname&&n.name)n.fullname=n.name;
+    if(!n.fullname&&n['full_name'])n.fullname=n['full_name'];
+    return n;
+  });
+}
+
+function ingestData(rows){
+  dbAll=normaliseRows(rows);
+  populateFilters();
+  applyFilters();
+  document.getElementById('upload-zone').style.display='none';
+  document.getElementById('filter-card').style.display='block';
+  document.getElementById('tbl-card').style.display='block';
+  document.getElementById('db-status').textContent=dbAll.length+' rows loaded';
+  document.getElementById('audience-hint').textContent=dbAll.length+' leads loaded · select contacts then proceed';
+  addLog('DB loaded: '+dbAll.length+' rows','info');
+  saveDBToStorage();
+}
+
+function saveDBToStorage(){
+  try{localStorage.setItem(STORE_KEY+'_db',JSON.stringify(dbAll));}catch(e){}
+}
+
+function loadDBFromStorage(){
   try{
-    const res=await fetch(GAS_URL+'?tab=DB');
-    const data=await res.json();
-    if(!data.success)throw new Error('Sheet error');
-    dbAll=data.data.filter(r=>r.mobile||r.Mobile).map(r=>{
-      const n={};
-      Object.keys(r).forEach(k=>n[k.toLowerCase().trim().replace(/\s+/g,'_')]=r[k]);
-      return n;
-    });
+    const raw=localStorage.getItem(STORE_KEY+'_db');
+    if(!raw)return false;
+    dbAll=JSON.parse(raw);
+    if(!dbAll.length)return false;
     populateFilters();
     applyFilters();
-    document.getElementById('db-status').textContent=dbAll.length+' rows loaded';
-    addLog('DB loaded: '+dbAll.length+' leads','info');
-  }catch(e){
-    document.getElementById('db-loading').textContent='Failed to load. Check GAS URL & permissions.';
-    addLog('DB load failed: '+e.message,'err');
+    document.getElementById('upload-zone').style.display='none';
+    document.getElementById('filter-card').style.display='block';
+    document.getElementById('tbl-card').style.display='block';
+    document.getElementById('db-status').textContent=dbAll.length+' rows (cached)';
+    document.getElementById('audience-hint').textContent=dbAll.length+' leads loaded · select contacts then proceed';
+    return true;
+  }catch(e){return false;}
+}
+
+function clearDB(){
+  if(!confirm('Clear loaded data?'))return;
+  dbAll=[];dbFiltered=[];
+  document.getElementById('upload-zone').style.display='block';
+  document.getElementById('filter-card').style.display='none';
+  document.getElementById('tbl-card').style.display='none';
+  document.getElementById('db-status').textContent='';
+  document.getElementById('audience-hint').textContent='Upload or paste DB data to get started';
+  try{localStorage.removeItem(STORE_KEY+'_db');}catch(e){}
+  addLog('DB cleared','warn');
+}
+
+function loadFromPaste(){
+  const raw=document.getElementById('paste-json').value.trim();
+  if(!raw){alert('Paste JSON first');return;}
+  try{
+    let parsed=JSON.parse(raw);
+    // support {success:true, data:[...]} wrapper from GAS
+    if(parsed.data&&Array.isArray(parsed.data))parsed=parsed.data;
+    if(!Array.isArray(parsed))throw new Error('Expected JSON array');
+    ingestData(parsed);
+    hidePastePanel();
+    document.getElementById('paste-json').value='';
+  }catch(e){alert('Invalid JSON: '+e.message);}
+}
+
+function handleFileUpload(input){
+  const file=input.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>parseCSV(e.target.result,file.name);
+  reader.readAsText(file);
+  input.value='';
+}
+
+function handleDrop(e){
+  e.preventDefault();
+  document.getElementById('upload-zone').style.borderColor='var(--border2)';
+  const file=e.dataTransfer.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>parseCSV(ev.target.result,file.name);
+  reader.readAsText(file);
+}
+
+function parseCSV(text,filename){
+  const isTSV=filename&&filename.endsWith('.tsv');
+  const sep=isTSV?'\t':detectSep(text);
+  const lines=text.trim().split(/\r?\n/);
+  if(lines.length<2){alert('File seems empty or has no data rows.');return;}
+  const headers=splitCSVLine(lines[0],sep);
+  const rows=lines.slice(1).map(line=>{
+    const vals=splitCSVLine(line,sep);
+    const obj={};
+    headers.forEach((h,i)=>obj[h.trim()]=vals[i]!==undefined?vals[i].trim():'');
+    return obj;
+  }).filter(r=>Object.values(r).some(v=>v!==''));
+  ingestData(rows);
+}
+
+function detectSep(text){
+  const first=text.split('\n')[0];
+  const tabs=(first.match(/\t/g)||[]).length;
+  const commas=(first.match(/,/g)||[]).length;
+  return tabs>commas?'\t':',';
+}
+
+function splitCSVLine(line,sep){
+  if(sep!==',')return line.split(sep);
+  const result=[];let cur='';let inQ=false;
+  for(let i=0;i<line.length;i++){
+    const ch=line[i];
+    if(ch==='"'){inQ=!inQ;}
+    else if(ch===','&&!inQ){result.push(cur);cur='';}
+    else cur+=ch;
   }
+  result.push(cur);
+  return result.map(v=>v.replace(/^"|"$/g,''));
+}
+
+function loadDB(){
+  document.getElementById('csv-file').click();
 }
 
 function populateFilters(){
@@ -737,7 +880,9 @@ function delay(ms){return new Promise(r=>setTimeout(r,ms));}
   }
   document.getElementById('camp-name').addEventListener('input',saveState);
   document.getElementById('trigger').addEventListener('change',saveState);
-  loadDB();
+  if(!loadDBFromStorage()){
+    // show upload zone (already visible by default)
+  }
 })();
 </script>
 </body>
